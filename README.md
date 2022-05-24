@@ -1,6 +1,10 @@
-# team04-w22-5pm-courses
+# s22-5pm-courses
 
 [![codecov](https://codecov.io/gh/ucsb-cs156-w22/team04-w22-5pm-courses/branch/main/graph/badge.svg?token=LvEIQ6tYti)](https://codecov.io/gh/ucsb-cs156-w22/team04-w22-5pm-courses)
+
+* Heroku production app: <https://s22-5pm-courses.herokuapp.com/>
+
+* Heroku dashboard URL: <https://dashboard.heroku.com/apps/s22-5pm-courses/>
 
 Storybook is here:
 * Production: <https://ucsb-cs156-w22.github.io/team04-w22-5pm-courses-docs/>
