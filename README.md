@@ -1,6 +1,6 @@
 # proj01-s22-5pm-courses
 
-[![codecov](https://codecov.io/gh/ucsb-cs156-w22/team04-w22-5pm-courses/branch/main/graph/badge.svg?token=LvEIQ6tYti)](https://codecov.io/gh/ucsb-cs156-w22/team04-w22-5pm-courses)
+[![codecov](https://codecov.io/gh/ucsb-cs156-s22/s22-5pm-courses/branch/main/graph/badge.svg?token=XVVkeMISkP)](https://codecov.io/gh/ucsb-cs156-s22/s22-5pm-courses)
 
 * Heroku production app: <https://s22-5pm-courses.herokuapp.com/>
 
