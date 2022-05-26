@@ -37,6 +37,8 @@ public class UCSBCurriculumService  {
 
     public static final String SUBJECTS_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/subjects";
 
+    public static final String SECTION_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classes/{quarter}/{enrollCode}";
+
     public String getJSON(String subjectArea, String quarter, String courseLevel) {
 
         HttpHeaders headers = new HttpHeaders();
