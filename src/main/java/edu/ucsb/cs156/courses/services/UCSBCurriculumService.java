@@ -108,8 +108,7 @@ public class UCSBCurriculumService  {
     }
 
     public String getSectionJSON(String quarter, String enrollCode) {
-        logger.info("quarter={}", quarter);
-        logger.info("enrollCode={}", enrollCode);
+        logger.info("quarter={} enrollCode={}", quarter, enrollCode);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -130,15 +129,11 @@ public class UCSBCurriculumService  {
             contentType = re.getHeaders().getContentType();
             statusCode = re.getStatusCode();
             retVal = re.getBody();
-        } catch (HttpClientErrorException.NotFound e) {
-            retVal = "{\"error\": \"404: Not found\"}";
         } catch (HttpClientErrorException.Unauthorized e) {
             retVal = "{\"error\": \"401: Unauthorized\"}";
-        } catch (HttpClientErrorException e) {
-            retVal = "{\"error\": \"400: Client error\"}";
         }
 
-        if (retVal == null)
+        if (retVal.equals("null"))
         {
             retVal = "{\"error\": \"Section not found\"}";
         }
