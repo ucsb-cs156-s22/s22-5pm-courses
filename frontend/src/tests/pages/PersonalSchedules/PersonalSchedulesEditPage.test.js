@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { fireEvent, render, waitFor, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
@@ -52,15 +52,18 @@ describe("PersonalSchedulesEditPage tests", () => {
 
             const restoreConsole = mockConsole();
 
-            const {getByText, queryByTestId} = render(
+            render(
                 <QueryClientProvider client={queryClient}>
                     <MemoryRouter>
                         <PersonalSchedulesEditPage />
                     </MemoryRouter>
                 </QueryClientProvider>
             );
-            await waitFor(() => expect(getByText("Edit PersonalSchedules")).toBeInTheDocument());
-            expect(queryByTestId("PersonalScheduleForm-id")).not.toBeInTheDocument();
+            await waitFor( () => {
+                expect(screen.getByText("Edit PersonalSchedules")).toBeInTheDocument();
+            }); 
+             
+            expect(screen.queryByTestId("PersonalScheduleForm-id")).not.toBeInTheDocument();
             restoreConsole();
         });
     });
@@ -101,7 +104,7 @@ describe("PersonalSchedulesEditPage tests", () => {
 
         test("Is populated with the data provided", async () => {
 
-            const { getByTestId } = render(
+            render(
                 <QueryClientProvider client={queryClient}>
                     <MemoryRouter>
                         <PersonalSchedulesEditPage />
@@ -109,11 +112,11 @@ describe("PersonalSchedulesEditPage tests", () => {
                 </QueryClientProvider>
             );
 
-            await waitFor(() => expect(getByTestId("PersonalScheduleForm-id")).toBeInTheDocument());
+            await screen.findByTestId("PersonalScheduleForm-id");
 
-            const idField = getByTestId("PersonalScheduleForm-id");
-            const nameField = getByTestId("PersonalScheduleForm-name");
-            const descriptionField = getByTestId("PersonalScheduleForm-description");
+            const idField = screen.getByTestId("PersonalScheduleForm-id");
+            const nameField = screen.getByTestId("PersonalScheduleForm-name");
+            const descriptionField = screen.getByTestId("PersonalScheduleForm-description");
 
             expect(idField).toHaveValue("1");
             expect(nameField).toHaveValue("Spring 22 CS Major");
@@ -124,7 +127,7 @@ describe("PersonalSchedulesEditPage tests", () => {
 
 
 
-            const { getByTestId } = render(
+            render(
                 <QueryClientProvider client={queryClient}>
                     <MemoryRouter>
                         <PersonalSchedulesEditPage />
@@ -132,13 +135,12 @@ describe("PersonalSchedulesEditPage tests", () => {
                 </QueryClientProvider>
             );
 
-            await waitFor(() => expect(getByTestId("PersonalScheduleForm-id")).toBeInTheDocument());
+            await screen.findByTestId("PersonalScheduleForm-id");
 
-            const idField = getByTestId("PersonalScheduleForm-id");
-            const nameField = getByTestId("PersonalScheduleForm-name");
-            const descriptionField = getByTestId("PersonalScheduleForm-description");
-            const quarterField = getByTestId("PersonalScheduleForm-quarter");
-            const submitButton = getByTestId("PersonalScheduleForm-submit");
+            const idField = screen.getByTestId("PersonalScheduleForm-id");
+            const nameField = screen.getByTestId("PersonalScheduleForm-name");
+            const descriptionField = screen.getByTestId("PersonalScheduleForm-description");
+            const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
             expect(idField).toHaveValue("1");
             expect(nameField).toHaveValue("Spring 22 CS Major");
@@ -151,7 +153,7 @@ describe("PersonalSchedulesEditPage tests", () => {
             
             fireEvent.click(submitButton);
 
-            await waitFor(() => expect(mockToast).toBeCalled);
+            await waitFor(() => expect(mockToast).toBeCalled());
             expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 1 name: Spring 22 CE Major");
             expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules/list" });
 
