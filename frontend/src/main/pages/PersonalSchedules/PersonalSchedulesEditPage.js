@@ -29,8 +29,7 @@ export default function PersonalSchedulesEditPage() {
         },
         data: {
             name: personalSchedule.name,
-            description: personalSchedule.description,
-            quarter: personalSchedule.quarter
+            description: personalSchedule.description
         }
     });
 

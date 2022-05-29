@@ -84,7 +84,7 @@ describe("PersonalSchedulesEditPage tests", () => {
                 id: 1,
                 name: "Memorial Day 2021",
                 description: "Description of Memorial Day 2021",
-                quarter: "20212"
+                quarter: "20222" // Modified from 20212
             });
         });
 
@@ -119,7 +119,7 @@ describe("PersonalSchedulesEditPage tests", () => {
             expect(idField).toHaveValue("1");
             expect(nameField).toHaveValue("Memorial Day 2022");
             expect(descriptionField).toHaveValue("Description of Memorial Day 2022");
-            expect(quarterField).toHaveValue("20222");
+            expect(quarterField).toHaveValue("20222"); // Modified from 20212
         });
 
         test("Changes when you click Update", async () => {
@@ -151,7 +151,7 @@ describe("PersonalSchedulesEditPage tests", () => {
 
             fireEvent.change(nameField, { target: { value: 'Memorial Day 2021' } })
             fireEvent.change(descriptionField, { target: { value: 'Description of Memorial Day 2021' } })
-            fireEvent.change(quarterField, { target: { value: "20212" } })
+            fireEvent.change(quarterField, { target: { value: "20222" } })
 
             fireEvent.click(submitButton);
 
@@ -164,7 +164,7 @@ describe("PersonalSchedulesEditPage tests", () => {
             expect(axiosMock.history.put[0].data).toBe(JSON.stringify({
                 name: "Memorial Day 2021",
                 description: "Description of Memorial Day 2021",
-                quarter: "20212"
+                quarter: "20222" // Modified from 20212
             })); // posted object
 
         });
