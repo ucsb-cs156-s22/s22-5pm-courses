@@ -162,6 +162,7 @@ describe("PersonalSchedulesEditPage tests", () => {
             expect(axiosMock.history.put[0].data).toBe(JSON.stringify({
                 name: "Spring 22 CE Major",
                 description: "Description of Spring 22 CE Major",
+                quarter: "20222"
             })); // posted object
 
         });
