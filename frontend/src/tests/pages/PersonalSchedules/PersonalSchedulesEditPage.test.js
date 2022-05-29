@@ -76,15 +76,15 @@ describe("PersonalSchedulesEditPage tests", () => {
             axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
             axiosMock.onGet("/api/personalschedules", { params: { id: 1 } }).reply(200, {
                 id: 1,
-                name: "Memorial Day 2022",
-                description: "Description of Memorial Day 2022",
+                name: "Spring 22 CS Major",
+                description: "Description of Spring 22 CS Major",
                 quarter: "20222"
             });
             axiosMock.onPut('/api/personalschedules').reply(200, {
                 id: 1,
-                name: "Memorial Day 2021",
-                description: "Description of Memorial Day 2021",
-                quarter: "20222" // Modified from 20212
+                name: "Spring 22 CE Major",
+                description: "Description of Spring 22 CE Major",
+                quarter: "20222"
             });
         });
 
@@ -114,12 +114,10 @@ describe("PersonalSchedulesEditPage tests", () => {
             const idField = getByTestId("PersonalScheduleForm-id");
             const nameField = getByTestId("PersonalScheduleForm-name");
             const descriptionField = getByTestId("PersonalScheduleForm-description");
-            const quarterField = getByTestId("PersonalScheduleForm-quarter");
 
             expect(idField).toHaveValue("1");
-            expect(nameField).toHaveValue("Memorial Day 2022");
-            expect(descriptionField).toHaveValue("Description of Memorial Day 2022");
-            expect(quarterField).toHaveValue("20222"); // Modified from 20212
+            expect(nameField).toHaveValue("Spring 22 CS Major");
+            expect(descriptionField).toHaveValue("Description of Spring 22 CS Major");
         });
 
         test("Changes when you click Update", async () => {
@@ -143,28 +141,25 @@ describe("PersonalSchedulesEditPage tests", () => {
             const submitButton = getByTestId("PersonalScheduleForm-submit");
 
             expect(idField).toHaveValue("1");
-            expect(nameField).toHaveValue("Memorial Day 2022");
-            expect(descriptionField).toHaveValue("Description of Memorial Day 2022");
-            expect(quarterField).toHaveValue("20222");
+            expect(nameField).toHaveValue("Spring 22 CS Major");
+            expect(descriptionField).toHaveValue("Description of Spring 22 CS Major");
 
             expect(submitButton).toBeInTheDocument();
 
-            fireEvent.change(nameField, { target: { value: 'Memorial Day 2021' } })
-            fireEvent.change(descriptionField, { target: { value: 'Description of Memorial Day 2021' } })
-            fireEvent.change(quarterField, { target: { value: "20222" } })
-
+            fireEvent.change(nameField, { target: { value: 'Spring 22 CE Major' } })
+            fireEvent.change(descriptionField, { target: { value: 'Description of Spring 22 CE Major' } })
+            
             fireEvent.click(submitButton);
 
             await waitFor(() => expect(mockToast).toBeCalled);
-            expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 1 name: Memorial Day 2021");
+            expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 1 name: Spring 22 CE Major");
             expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules/list" });
 
             expect(axiosMock.history.put.length).toBe(1); // times called
-            expect(axiosMock.history.put[0].params).toEqual({ id: 11 });
+            expect(axiosMock.history.put[0].params).toEqual({ id: 1 });
             expect(axiosMock.history.put[0].data).toBe(JSON.stringify({
-                name: "Memorial Day 2021",
-                description: "Description of Memorial Day 2021",
-                quarter: "20222" // Modified from 20212
+                name: "Spring 22 CE Major",
+                description: "Description of Spring 22 CE Major",
             })); // posted object
 
         });
