@@ -78,6 +78,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
 
                     <NavDropdown.Item href="/admin/users" data-testid="appnavbar-admin-users">Users</NavDropdown.Item>
                     <NavDropdown.Item href="/admin/personalschedule" data-testid="appnavbar-admin-personalschedule">Personal Schedules</NavDropdown.Item>
+                    <NavDropdown.Item href="/admin/sectionsearches" data-testid="appnavbar-admin-sectionsearches">Section Searches</NavDropdown.Item>
                     <NavDropdown.Item href="/admin/loadsubjects" data-testid="appnavbar-admin-loadsubjects">Load Subjects</NavDropdown.Item>
 
                   </NavDropdown>

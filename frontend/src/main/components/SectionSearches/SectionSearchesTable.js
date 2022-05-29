@@ -21,16 +21,12 @@ export default function SectionSearchesTable({ section, currentUser }) {
             accessor: 'title', 
         },
         {
-            Header: 'Subjectarea',
+            Header: 'SubjectArea',
             accessor: 'subject area', 
         },
         {
             Header: 'Enrollcode',
             accessor: 'enroll code', 
-        },
-        {
-            Header: 'EnrolledTotal',
-            accessor: 'total enrolled',
         },
         {
             Header: 'MaxEnroll',
