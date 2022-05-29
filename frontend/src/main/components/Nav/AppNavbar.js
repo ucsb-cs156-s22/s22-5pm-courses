@@ -57,7 +57,16 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                   </NavDropdown>
                 )
               }
+              {
+                hasRole(currentUser, "ROLE_USER") && (
+                  <NavDropdown title="SectionSearches" id="appnavbar-sectionsearches-dropdown" data-testid="appnavbar-sectionsearches-dropdown" >
+                    <NavDropdown.Item href="/sectionsearches/list" data-testid="appnavbar-sectionsearches-list">List</NavDropdown.Item>
+                    <NavDropdown.Item href="/sectionsearches/create" data-testid="appnavbar-sectionsearches-create">Create</NavDropdown.Item>
+                  </NavDropdown>
+                )
+              }
             </Nav>
+
 
 
 
