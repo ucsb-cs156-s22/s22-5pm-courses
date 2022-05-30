@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 //import { useBackend } from 'main/utils/useBackend'
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { useCurrentUser } from 'main/utils/currentUser';
+import { _useCurrentUser } from 'main/utils/currentUser';
 //import { useBackend } from 'main/utils/useBackend';
 //import PersonalSchedulesDetailTable from 'main/components/PersonalSchedulesDetailTable'
 // Remember to ask -1 team for components for DetailTable and edit based on that
