@@ -37,22 +37,22 @@ public class CoursesAddedController extends ApiController{
     @Autowired
     CoursesAddedRepository coursesaddedRepository;
 
-    @ApiOperation(value = "Add a new course")
+    @ApiOperation(value = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
     public CoursesAdded postCourse(
             @ApiParam("enrollCd") @RequestParam String enrollCd,
-            @ApiParam("psId") @RequestParam String psId,
-            @ApiParam("yyyyq") @RequestParam String yyyyq) {
+            @ApiParam("psId") @RequestParam long psId,
+            @ApiParam("quarter") @RequestParam String quarter) {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
 
         CoursesAdded coursesadded = new CoursesAdded();
         coursesadded.setUser(currentUser.getUser());
-        coursesadded.setenrollCd(enrollCd);
-        coursesadded.setpsId(psId);
-        coursesadded.setyyyyq(yyyyq);
-        CoursesAdded savedcoursesadded = coursesaddedRepository.save(coursesadded);
-        return savedcoursesadded;
+        coursesadded.setEnrollCd(enrollCd);
+        coursesadded.setPsId(psId);
+        coursesadded.setQuarter(quarter);
+        CoursesAdded savedCoursesAdded = coursesaddedRepository.save(coursesadded);
+        return savedCoursesAdded;
     }
 }

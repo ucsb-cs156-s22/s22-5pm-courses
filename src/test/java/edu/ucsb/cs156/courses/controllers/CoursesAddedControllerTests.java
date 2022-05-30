@@ -53,7 +53,7 @@ public class CoursesAddedControllerTests extends ControllerTestCase {
 
         User thisUser = currentUserService.getCurrentUser().getUser();
 
-        CoursesAdded expectedCourses = Coursesadded.builder().enrollCd("Test code").psId("Test psId").yyyyq("20222").user(thisUser).id(0L).build();
+        CoursesAdded expectedCourses = CoursesAdded.builder().enrollCd("Test code").psId(123).quarter("20222").user(thisUser).id(0L).build();
 
         when(coursesaddedRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
 
