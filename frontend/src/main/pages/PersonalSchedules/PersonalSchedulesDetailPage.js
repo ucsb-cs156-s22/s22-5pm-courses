@@ -1,4 +1,5 @@
 import React from 'react'
+import { useParams } from "react-router-dom";
 //import { useBackend } from 'main/utils/useBackend'
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
@@ -9,6 +10,8 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 //import { useCurrentUser } from 'main/utils/currentUser'
 
 export default function PersonalSchedulesDetailPage() {
+
+    let { id } = useParams();
 
     // const currentUser = useCurrentUser();
 
@@ -25,7 +28,7 @@ export default function PersonalSchedulesDetailPage() {
             <div className="pt-2">
                 <h1>PersonalSchedules Detail</h1>
                 <p>
-                    This is where the detail page will go
+                    This is where the detail page will go (id: {id})
                 </p>
             </div>
         </BasicLayout>
