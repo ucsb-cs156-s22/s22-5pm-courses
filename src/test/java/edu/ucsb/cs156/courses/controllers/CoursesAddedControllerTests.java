@@ -59,7 +59,7 @@ public class CoursesAddedControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/coursesadded/post?enrollCd=Test code&psId=Test psId&quarter=20222")
+                post("/api/coursesadded/post?enrollCd=Test code&psId=123&quarter=20222")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
