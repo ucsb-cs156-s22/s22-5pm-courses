@@ -74,6 +74,3 @@ export const localhost_8080 = Template.bind({});
 localhost_8080.args = {
     currentUrl: "http://localhost:8080"
 };
-
-
-
