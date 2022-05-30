@@ -1,16 +1,19 @@
 package edu.ucsb.cs156.courses.entities;
 
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+
 
 @Data
 @AllArgsConstructor
@@ -28,4 +31,8 @@ public class PersonalSchedule {
   private String name;
   private String description;
   private String quarter;
+
+  @OneToMany
+  private List<CoursesAdded> coursesAdded;
+  
 }

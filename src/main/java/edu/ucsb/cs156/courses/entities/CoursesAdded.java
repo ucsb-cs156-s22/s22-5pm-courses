@@ -25,9 +25,13 @@ public class CoursesAdded {
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
-  //private String id;
+  
   private String enrollCd;
-  private String psId;
+
+  @ManyToOne
+  @JoinColumn(name = "ps_id")
+  private long psId;
+
   private String quarter;
 }
 
