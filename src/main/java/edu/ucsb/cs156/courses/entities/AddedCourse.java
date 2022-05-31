@@ -16,23 +16,17 @@ import lombok.Builder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "coursesadded")
-public class CoursesAdded {
+@Entity(name = "added_course")
+public class AddedCourse {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
-
   private String enrollCd;
 
   @ManyToOne
-  @JoinColumn(name = "ps_id")
-  private long psId;
-
-  private String quarter;
+  @JoinColumn(name="ps_id", nullable=false)
+  private PersonalSchedule personalSchedule;
 }
 
 // id
