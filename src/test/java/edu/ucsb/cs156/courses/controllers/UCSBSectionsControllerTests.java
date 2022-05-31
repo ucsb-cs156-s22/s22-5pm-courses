@@ -43,8 +43,8 @@ public class UCSBSectionsControllerTests {
     @Test
     public void test_SectionSearch() throws Exception {
         String expectedResult = "{expectedJSONResult}";
-        String urlTemplate = "/api/sections/basicsearch?courseLevel=%s&quarter=%s&subjectArea=%s";
-        String url = String.format(urlTemplate, "L", "20204", "CMPSC");
+        String urlTemplate = "/api/sections/basicsearch?quarter=%s&courseLevel=%s&subjectArea=%s";
+        String url = String.format(urlTemplate, "20204", "L", "CMPSC");
         when(ucsbCurriculumService.getConvertedSectionsJSON(any(String.class), any(String.class), any(String.class)))
                 .thenReturn(expectedResult);
 
