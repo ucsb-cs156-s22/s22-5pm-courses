@@ -1,10 +1,12 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import edu.ucsb.cs156.courses.entities.CoursesAdded;
+import edu.ucsb.cs156.courses.entities.AddedCourse;
+import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
-import edu.ucsb.cs156.courses.repositories.CoursesAddedRepository;
+import edu.ucsb.cs156.courses.repositories.AddedCourseRepository;
+import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,30 +31,38 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@Api(description = "CoursesAdded")
-@RequestMapping("/api/coursesadded")
+@Api(description = "AddedCourses")
+@RequestMapping("/api/addedcourses")
 @RestController
 @Slf4j
-public class CoursesAddedController extends ApiController{
+public class AddedCoursesController extends ApiController{
     @Autowired
-    CoursesAddedRepository coursesaddedRepository;
+    AddedCourseRepository addedCourseRepository;
+
+    @Autowired
+    PersonalScheduleRepository personalScheduleRepository;
 
     @ApiOperation(value = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
-    public CoursesAdded postCourse(
+    public AddedCourse postCourse(
             @ApiParam("enrollCd") @RequestParam String enrollCd,
-            @ApiParam("psId") @RequestParam long psId,
-            @ApiParam("quarter") @RequestParam String quarter) {
-        CurrentUser currentUser = getCurrentUser();
-        log.info("currentUser={}", currentUser);
+            @ApiParam("psId") @RequestParam long psId) {
 
-        CoursesAdded coursesadded = new CoursesAdded();
-        coursesadded.setUser(currentUser.getUser());
-        coursesadded.setEnrollCd(enrollCd);
-        coursesadded.setPsId(psId);
-        coursesadded.setQuarter(quarter);
-        CoursesAdded savedCoursesAdded = coursesaddedRepository.save(coursesadded);
-        return savedCoursesAdded;
+        CurrentUser currentUser = getCurrentUser();
+        log.info("currentUser={} psId={}", currentUser, psId);
+        Optional<PersonalSchedule> personalSchedule = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser());
+
+        if (!personalSchedule.isPresent())
+        {
+            // TODO: Rejection of POST request somehow
+        }
+        // TODO: Get quarter from personalSchedule and determine if enrollCode is valid thru UCSB courses API
+
+        AddedCourse addedCourse = new AddedCourse();
+        addedCourse.setEnrollCd(enrollCd);
+        addedCourse.setPersonalSchedule(personalSchedule.get());
+        AddedCourse savedAddedCourse = addedCourseRepository.save(addedCourse);
+        return savedAddedCourse;
     }
 }
