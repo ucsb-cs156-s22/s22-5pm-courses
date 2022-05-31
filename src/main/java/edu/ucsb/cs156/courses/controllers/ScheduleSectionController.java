@@ -2,7 +2,7 @@ package edu.ucsb.cs156.courses.controllers;
 
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.Section;
-import edu.ucsb.cs156.courses.entities.CoursesAdded;
+import edu.ucsb.cs156.courses.entities.AddedCourse;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.entities.Section;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
@@ -58,9 +58,9 @@ public class ScheduleSectionController extends ApiController {
         PersonalSchedule personalSchedule = personalscheduleRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
         var quarter = personalSchedule.getQuarter();
-        var classesAdded = personalSchedule.getCoursesAdded();
+        var classesAdded = personalSchedule.getAddedCourses();
         List<String> listOfJSON = Collections.<String>emptyList();
-        for(CoursesAdded currentClass : classesAdded)
+        for(AddedCourse currentClass : classesAdded)
         {
             String enrollCode = currentClass.getEnrollCd();
             String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
