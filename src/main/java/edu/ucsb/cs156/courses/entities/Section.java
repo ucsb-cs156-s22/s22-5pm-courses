@@ -5,6 +5,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -72,14 +78,20 @@ public class Section {
   private String restrictionMinorPass;
 
   /** Concurrent courses for the section */
+  @Column
+  @ElementCollection(targetClass=String.class)
   private List<String> concurrentCourses;
 
   /**
    * List of {@link TimeLocation} objects for this course
    */
+  @Column
+  @ElementCollection(targetClass=TimeLocation.class)
   private List<TimeLocation> timeLocations;
   /**
    * List of {@link Instructor} objects for this course
    */
+  @Column
+  @ElementCollection(targetClass=Instructor.class)
   private List<Instructor> instructors;
 }
