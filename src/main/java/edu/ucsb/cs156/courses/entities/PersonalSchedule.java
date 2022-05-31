@@ -28,11 +28,12 @@ public class PersonalSchedule {
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
+
   private String name;
   private String description;
   private String quarter;
 
-  @OneToMany
-  private List<CoursesAdded> coursesAdded;
+  @OneToMany(mappedBy="personalSchedule")
+  private List<AddedCourse> addedCourses;
   
 }
