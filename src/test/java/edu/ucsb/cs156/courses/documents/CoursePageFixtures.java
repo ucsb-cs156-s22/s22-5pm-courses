@@ -3,7 +3,6 @@ package edu.ucsb.cs156.courses.documents;
 public class CoursePageFixtures {
 
     public static final String COURSE_PAGE_JSON_MATH3B = """
-            
                    {
                        "pageNumber": 1,
                        "pageSize": 10,
@@ -2968,6 +2967,7 @@ public class CoursePageFixtures {
                   }
                 ]
               }
+
                 """;
 
 }

@@ -87,12 +87,13 @@ public class UCSBCurriculumService  {
     }
 
 
-    public List<ConvertedSection> getConvertedSections(String subjectArea, String quarter, String courseLevel)
+    public String getConvertedSectionsJSON(String subjectArea, String quarter, String courseLevel)
             throws JsonProcessingException {
         String json = getJSON(subjectArea, quarter, courseLevel);
         CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);
-        List<ConvertedSection> result = coursePage.convertedSections();       
-        return result;
+        List<ConvertedSection> sections = coursePage.convertedSections();  
+        String convertedSection = objectMapper.writeValueAsString(sections);
+        return convertedSection;
     }
 
 
