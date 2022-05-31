@@ -12,6 +12,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
 
+import SectionSearchIndexPage from "main/pages/SectionSearch/SectionSearchIndexPage";
 
 function App() {
 
@@ -36,6 +37,13 @@ function App() {
             <>
               <Route exact path="/personalschedules/list" element={<PersonalSchedulesIndexPage />} />
               <Route exact path="/personalschedules/create" element={<PersonalSchedulesCreatePage />} />
+            </>
+          )
+        }
+        {
+          hasRole(currentUser, "ROLE_USER") && (
+            <>
+              <Route exact path="/sectionsearch" element={<SectionSearchIndexPage />} />
             </>
           )
         }
