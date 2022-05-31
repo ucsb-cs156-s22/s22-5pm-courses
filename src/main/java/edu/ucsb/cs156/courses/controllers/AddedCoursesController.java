@@ -70,10 +70,13 @@ public class AddedCoursesController extends ApiController{
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
     public Iterable<AddedCourse> thisUsersCourses(
-            @ApiParam("ps_id") @RequestParam Long id) {
+            @ApiParam("psId") @RequestParam Long psId) {
+                
         CurrentUser currentUser = getCurrentUser();
-        PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(id, currentUser)
-          .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
+        log.info("currentUser={} psId={}", currentUser, psId);
+
+        PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(psId, currentUser)
+          .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
         
         Iterable<AddedCourse> schedulesCourses = personalSchedule.getAddedCourses();
 
