@@ -1,69 +1,27 @@
+import { useBackend } from 'main/utils/useBackend';
+
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
+import SectionSearchTable from 'main/components/SectionSearch/SectionSearchTable';
+import { useCurrentUser } from 'main/utils/currentUser'
 
 export default function SectionSearchIndexPage() {
-  return (
-    <BasicLayout>
-      <div className="pt-2">
-        <h1>Section Search</h1>
-        <p>
-          This is where the index page will go
-        </p>
-      </div>
-    </BasicLayout>
-  )
+
+    const currentUser = useCurrentUser();
+
+    const { data: SectionSearch, error: _error, status: _status } =
+        useBackend(
+            // Stryker disable next-line all : don't test internal caching of React Query
+            ["/api/public/basicsearch"],
+            { method: "GET", url: "/api/public/basicsearch" },
+            []
+        );
+
+    return (
+        <BasicLayout>
+            <div className="pt-2">
+                <h1>SectionSearch</h1>
+                <SectionSearchTable SectionSearch={SectionSearch} currentUser={currentUser} />
+            </div>
+        </BasicLayout>
+    )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useBackend } from 'main/utils/useBackend';
-
-// import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-// import PersonalSchedulesTable from 'main/components/PersonalSchedules/PersonalSchedulesTable';
-// import { useCurrentUser } from 'main/utils/currentUser'
-
-// export default function PersonalSchedulesIndexPage() {
-
-//     const currentUser = useCurrentUser();
-
-//     const { data: personalSchedules, error: _error, status: _status } =
-//         useBackend(
-//             // Stryker disable next-line all : don't test internal caching of React Query
-//             ["/api/personalschedules/all"],
-//             { method: "GET", url: "/api/personalschedules/all" },
-//             []
-//         );
-
-//     return (
-//         <BasicLayout>
-//             <div className="pt-2">
-//                 <h1>PersonalSchedules</h1>
-//                 <PersonalSchedulesTable personalSchedules={personalSchedules} currentUser={currentUser} />
-//             </div>
-//         </BasicLayout>
-//     )
-// }
