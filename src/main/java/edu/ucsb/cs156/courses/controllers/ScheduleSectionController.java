@@ -57,8 +57,8 @@ public class ScheduleSectionController extends ApiController {
 
     @ApiOperation(value = "List all sections in a personal schedule, ADMIN")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/admin")
-    public List<ResponseEntity<String>> thisScheduleSections(
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<String>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id 
     ) {
         PersonalSchedule personalSchedule = personalscheduleRepository.findById(id)
@@ -66,23 +66,21 @@ public class ScheduleSectionController extends ApiController {
         
         var quarter = personalSchedule.getQuarter();
         Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
-
-        List<ResponseEntity<String>> listOfJSON = Collections.<ResponseEntity<String>>emptyList();
+        List<String> listOfJSON = Collections.<String>emptyList();
         for(AddedCourse currentClass : classesAdded)
         {
             String enrollCode = currentClass.getEnrollCd();
             String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
-            listOfJSON.add(ResponseEntity.ok().body(currentSection));
-            
+            listOfJSON.add(currentSection);
         }
-
-        return listOfJSON;
+  
+        return ResponseEntity.ok().body(listOfJSON);
     }
 
 
     @ApiOperation(value = "List all sections in a schedule (if it belongs to current user)")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping("/user")
+    @PutMapping("/all")
     public ResponseEntity<List<String>> thisUserSections(
             @ApiParam("id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
