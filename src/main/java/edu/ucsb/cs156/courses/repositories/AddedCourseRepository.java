@@ -10,3 +10,4 @@ import org.springframework.stereotype.Repository;
 public interface AddedCourseRepository extends CrudRepository<AddedCourse, Long> {
   Iterable<AddedCourse> findAllByPersonalSchedule(PersonalSchedule personalSchedule);
 }
+
