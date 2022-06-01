@@ -33,7 +33,7 @@ public class PersonalSchedule {
   private String description;
   private String quarter;
 
-  @OneToMany(mappedBy="personalSchedule")
-  private List<AddedCourse> addedCourses;
+  // @OneToMany(mappedBy="personalSchedule")
+  // private List<AddedCourse> addedCourses;
   
 }
