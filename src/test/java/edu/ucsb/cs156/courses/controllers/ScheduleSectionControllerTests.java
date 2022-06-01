@@ -102,12 +102,12 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         AddedCourse ac1 = AddedCourse.builder().id(1).enrollCd("123").personalSchedule(personalSchedule).build();
 
         when(addedCourseRepository.findById(eq(1L))).thenReturn(Optional.of(ac1));
-        verify(personalscheduleRepository, times(1)).findById(eq(7L));
+
 
         MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=1"))
-                                .andExpect(status().is(200)).andReturn();
+                                .andExpect(status().isOk()).andReturn();
         
-        
+        verify(personalscheduleRepository, times(1)).findById(eq(7L));
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
         assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
