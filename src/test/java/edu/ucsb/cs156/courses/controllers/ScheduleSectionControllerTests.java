@@ -46,21 +46,21 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
     UserRepository userRepository;
 
     @Test
-    public void api_schedules_admin_all__logged_out__returns_403() throws Exception {
+    public void sections_admin_all__logged_out__returns_403() throws Exception {
         mockMvc.perform(get("/api/schedulesection/list"))
                 .andExpect(status().is(403));
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void api_schedules_admin_all__user_logged_in__returns_403() throws Exception {
+    public void sections_admin_all__user_logged_in__returns_403() throws Exception {
         mockMvc.perform(get("/api/schedulesection/list/admin"))
                 .andExpect(status().is(403));
     }
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void api_schedules_admin_all__admin_logged_in__returns_200() throws Exception {
+    public void sections_admin_all__admin_logged_in__returns_200() throws Exception {
         mockMvc.perform(get("/api/schedulesection/list/admin"))
                 .andExpect(status().isOk());
     }
