@@ -92,21 +92,6 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
     }
 
-    // @WithMockUser(roles = { "USER" })
-    // @Test
-    // public void sections_user_all_id_does_not_exist() throws Exception {
-
-    //     when(addedCourseRepository.findById(eq(7L))).thenReturn(Optional.empty());
-
-    //     MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=7"))
-    //                             .andExpect(status().is(403)).andReturn();
-        
-    //     verify(personalscheduleRepository, times(1)).findById(eq(7L));
-    //     Map<String, Object> json = responseToJson(response);
-    //     assertEquals("EntityNotFoundException", json.get("type"));
-    //     assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
-    // }
-
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void sections_admin_return_OK() throws Exception {
@@ -117,12 +102,12 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         AddedCourse ac1 = AddedCourse.builder().id(1).enrollCd("123").personalSchedule(personalSchedule).build();
 
         when(addedCourseRepository.findById(eq(1L))).thenReturn(Optional.of(ac1));
-
+        verify(personalscheduleRepository, times(1)).findById(eq(7L));
 
         MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=1"))
                                 .andExpect(status().is(200)).andReturn();
         
-        verify(personalscheduleRepository, times(1)).findById(eq(7L));
+        
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
         assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
