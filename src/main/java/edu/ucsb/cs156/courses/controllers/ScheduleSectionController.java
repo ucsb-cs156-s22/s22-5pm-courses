@@ -6,6 +6,11 @@ import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
+
+import edu.ucsb.cs156.courses.repositories.AddedCourseRepository;
+
+import edu.ucsb.cs156.courses.entities.AddedCourse;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -45,18 +50,22 @@ public class ScheduleSectionController extends ApiController {
     PersonalScheduleRepository personalscheduleRepository;
 
     @Autowired
+    AddedCourseRepository addedCourseRepository;
+
+    @Autowired
     UCSBCurriculumService ucsbCurriculumService;
 
     @ApiOperation(value = "List all sections in a personal schedule, ADMIN")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/list/admin")
+    @GetMapping("")
     public ResponseEntity<List<String>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id 
     ) {
         PersonalSchedule personalSchedule = personalscheduleRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
         var quarter = personalSchedule.getQuarter();
-        var classesAdded = personalSchedule.getAddedCourses();
+        Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
+
         List<String> listOfJSON = Collections.<String>emptyList();
         for(AddedCourse currentClass : classesAdded)
         {
@@ -72,7 +81,7 @@ public class ScheduleSectionController extends ApiController {
 
     @ApiOperation(value = "List all sections in a schedule (if it belongs to current user)")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping("/list")
+    @PutMapping("/admin")
     public ResponseEntity<List<String>> thisUserSections(
             @ApiParam("id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
@@ -80,7 +89,7 @@ public class ScheduleSectionController extends ApiController {
           .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
 
         var quarter = personalSchedule.getQuarter();
-        var classesAdded = personalSchedule.getAddedCourses();
+        Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
         List<String> listOfJSON = Collections.<String>emptyList();
         for(AddedCourse currentClass : classesAdded)
         {
