@@ -81,7 +81,7 @@ public class ScheduleSectionController extends ApiController {
 
     @ApiOperation(value = "List all sections in a schedule (if it belongs to current user)")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping("/admin")
+    @PutMapping("/user")
     public ResponseEntity<List<String>> thisUserSections(
             @ApiParam("id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
