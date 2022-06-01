@@ -6,6 +6,7 @@ import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.entities.AddedCourse;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
+import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.repositories.AddedCourseRepository;
 
@@ -110,7 +111,9 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
     @Test
     public void sections_admin_return_OK() throws Exception {
 
-        PersonalSchedule personalSchedule = PersonalSchedule.builder().id(1).name("Ryan").description("Test").quarter("2022W").build();
+        User u1 = User.builder().id(1L).build();
+
+        PersonalSchedule personalSchedule = PersonalSchedule.builder().id(1).name("Ryan").description("Test").quarter("2022W").user(u1).build();
         AddedCourse ac1 = AddedCourse.builder().id(1).enrollCd("123").personalSchedule(personalSchedule).build();
 
         when(addedCourseRepository.findById(eq(1L))).thenReturn(Optional.of(ac1));
