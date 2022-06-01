@@ -68,9 +68,9 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void sections_admin_logged_in__returns_403() throws Exception {
+    public void sections_admin_logged_in__returns_404() throws Exception {
         mockMvc.perform(get("/api/schedulesection/admin/all?id=1"))
-                .andExpect(status().is(403));
+                .andExpect(status().is(404));
     }
 
 
