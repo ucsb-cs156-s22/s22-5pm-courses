@@ -55,9 +55,9 @@ public class ScheduleSectionController extends ApiController {
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
 
-    @ApiOperation(value = "List all sections in a personal schedule, ADMIN")
+    @ApiOperation(value = "Get sections from a single schedule")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/admin/all")
+    @GetMapping("/admin")
     public ResponseEntity<List<String>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id 
     ) {
@@ -80,9 +80,9 @@ public class ScheduleSectionController extends ApiController {
     }
 
 
-    @ApiOperation(value = "List all sections in a schedule (if it belongs to current user)")
+    @ApiOperation(value = "Get sections from a single schedule (if it belongs to current user)")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping("/all")
+    @PutMapping("")
     public ResponseEntity<List<String>> thisUserSections(
             @ApiParam("id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();

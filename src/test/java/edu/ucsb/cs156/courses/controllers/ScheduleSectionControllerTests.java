@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -98,10 +99,11 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
         User u1 = User.builder().id(1L).build();
 
-        PersonalSchedule personalSchedule = PersonalSchedule.builder().id(1).name("Ryan").description("Test").quarter("2022W").user(u1).build();
-        AddedCourse ac1 = AddedCourse.builder().id(1).enrollCd("123").personalSchedule(personalSchedule).build();
-
-        when(addedCourseRepository.findById(eq(1L))).thenReturn(Optional.of(ac1));
+        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1).build();
+        AddedCourse ac1 = AddedCourse.builder().enrollCd("123").personalSchedule(personalSchedule).id(1).build();
+        List<AddedCourse> listac1 = Collections.<AddedCourse>emptyList();
+        listac1.add(ac1);
+        when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
 
 
         MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=1"))
