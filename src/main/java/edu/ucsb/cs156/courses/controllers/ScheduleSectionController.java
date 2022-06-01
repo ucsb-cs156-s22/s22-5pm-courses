@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Collections;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +68,7 @@ public class ScheduleSectionController extends ApiController {
         
         var quarter = personalSchedule.getQuarter();
         Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
-        List<String> listOfJSON = Collections.<String>emptyList();
+        List<String> listOfJSON = new ArrayList<>();
 
         for(AddedCourse currentClass : classesAdded)
         {
@@ -91,7 +92,7 @@ public class ScheduleSectionController extends ApiController {
 
         var quarter = personalSchedule.getQuarter();
         Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
-        List<String> listOfJSON = Collections.<String>emptyList();
+        List<String> listOfJSON = new ArrayList<>();
         for(AddedCourse currentClass : classesAdded)
         {
             String enrollCode = currentClass.getEnrollCd();
