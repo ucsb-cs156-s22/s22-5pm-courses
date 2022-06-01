@@ -57,22 +57,29 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
     @Test
     public void sections_admin_all__logged_out__returns_403() throws Exception {
-        mockMvc.perform(get("/api/schedulesection/admin/all?id=1"))
+        mockMvc.perform(get("/api/schedulesection/admin?id=1"))
                 .andExpect(status().is(403));
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
     public void sections_admin_all__user_logged_in__returns_403() throws Exception {
-        mockMvc.perform(get("/api/schedulesection/admin/all?id=1"))
+        mockMvc.perform(get("/api/schedulesection/admin?id=1"))
                 .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void sections__user_logged_in__returns_404() throws Exception {
+        mockMvc.perform(get("/api/schedulesection?id=1"))
+                .andExpect(status().is(404));
     }
 
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void sections_admin_logged_in__returns_404() throws Exception {
-        mockMvc.perform(get("/api/schedulesection/admin/all?id=1"))
+        mockMvc.perform(get("/api/schedulesection/admin?id=1"))
                 .andExpect(status().is(404));
     }
 
@@ -84,7 +91,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
         when(addedCourseRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
-        MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=7"))
+        MvcResult response = mockMvc.perform(get("/api/schedulesection/admin?id=7"))
                                 .andExpect(status().is(404)).andReturn();
         
         verify(personalscheduleRepository, times(1)).findById(eq(7L));
@@ -106,7 +113,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
 
 
-        MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=1"))
+        MvcResult response = mockMvc.perform(get("/api/schedulesection/admin?id=1"))
                                 .andExpect(status().isOk()).andReturn();
         
         verify(personalscheduleRepository, times(1)).findById(eq(7L));
