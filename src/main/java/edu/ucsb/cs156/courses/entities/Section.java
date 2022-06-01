@@ -1,29 +1,29 @@
-// package edu.ucsb.cs156.courses.entities;
+package edu.ucsb.cs156.courses.entities;
 
-// import javax.persistence.Entity;
-// import javax.persistence.GenerationType;
-// import javax.persistence.Id;
-// import javax.persistence.GeneratedValue;
+import javax.persistence.Entity;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
 
-// import javax.persistence.JoinColumn;
-// import javax.persistence.ManyToOne;
-// import javax.persistence.OneToMany;
-// import javax.persistence.Column;
-// import javax.persistence.ElementCollection;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 
 
-// import lombok.Data;
-// import lombok.NoArgsConstructor;
-// import lombok.AllArgsConstructor;
-// import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
-// import java.util.List;
+import java.util.List;
 // @Data
 // @AllArgsConstructor
 // @NoArgsConstructor
 // @Builder
-// @Entity(name = "section")
-// public class Section {
+@Entity(name = "section")
+public class Section {
 //   @Id
 //   @GeneratedValue(strategy = GenerationType.IDENTITY)
 //   private long id;
@@ -96,4 +96,4 @@
 //   //@OneToMany(targetEntity=Section.class, mappedBy="college", fetch=FetchType.EAGER)
 //   @OneToMany(mappedBy = "Section")
 //   //private List<Instructor> instructors;
-// }
+}
