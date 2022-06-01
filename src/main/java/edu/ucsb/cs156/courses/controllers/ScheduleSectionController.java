@@ -40,7 +40,7 @@ import java.util.Optional;
 
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 
-@Api(description = "Schedule Sections")
+@Api(description = "ScheduleSections")
 @RequestMapping("/api/schedulesection")
 @RestController
 @Slf4j
@@ -61,12 +61,14 @@ public class ScheduleSectionController extends ApiController {
     public ResponseEntity<List<String>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id 
     ) {
+
         PersonalSchedule personalSchedule = personalscheduleRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
         
         var quarter = personalSchedule.getQuarter();
         Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
         List<String> listOfJSON = Collections.<String>emptyList();
+
         for(AddedCourse currentClass : classesAdded)
         {
             String enrollCode = currentClass.getEnrollCd();
