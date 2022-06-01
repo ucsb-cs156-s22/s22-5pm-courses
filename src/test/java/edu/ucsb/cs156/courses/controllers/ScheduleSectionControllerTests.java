@@ -4,6 +4,7 @@ import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
+import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 
 
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ import static org.mockito.Mockito.doNothing;
 public class ScheduleSectionControllerTests extends ControllerTestCase {
 
     @MockBean
-    PersonalSchedule personalSchedule;
+    PersonalScheduleRepository personalscheduleRepository;
 
     @MockBean
     UserRepository userRepository;
