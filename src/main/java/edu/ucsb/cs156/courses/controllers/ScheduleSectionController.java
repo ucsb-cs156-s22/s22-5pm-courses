@@ -1,10 +1,8 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
-import edu.ucsb.cs156.courses.entities.Section;
 import edu.ucsb.cs156.courses.entities.AddedCourse;
 import edu.ucsb.cs156.courses.entities.User;
-import edu.ucsb.cs156.courses.entities.Section;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
