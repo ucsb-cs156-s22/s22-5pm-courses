@@ -7,6 +7,8 @@ import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
 import edu.ucsb.cs156.courses.repositories.AddedCourseRepository;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -42,6 +44,9 @@ public class AddedCoursesController extends ApiController{
     @Autowired
     PersonalScheduleRepository personalScheduleRepository;
 
+    @Autowired
+    UCSBCurriculumService ucsbCurriculumService;
+
     @ApiOperation(value = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
@@ -52,12 +57,28 @@ public class AddedCoursesController extends ApiController{
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={} psId={}", currentUser, psId);
         Optional<PersonalSchedule> personalSchedule = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser());
+        
+            
+        if (String.valueOf(psId).length() > 5){
+            //Reject POST request if psId is more than five digits
+            throw new IllegalArgumentException("psId should be no more than five digits");
+        }
 
         if (!personalSchedule.isPresent())
         {
-            // TODO: Rejection of POST request somehow
+            //Reject POST request if the psId is not the psId of an existing Personal Schedule
+            throw new IllegalArgumentException("PersonalSchedule doesn't exist!");
         }
-        // TODO: Get quarter from personalSchedule and determine if enrollCode is valid thru UCSB courses API
+        else
+        {
+            //Reject POST request if the quarter doesn't match the one on the psId
+            currentSchedule = personalSchedule.get();
+            String retVal = ucsbCurriculumService.getSectionJSON(currentSchedule.getQuarter(), enrollCd);
+            if  (retVal == "{\"error\": \"Section not found\"}"){
+                throw new IllegalArgumentException("The enrollCd is not exist in the given quarter");
+            }
+        }
+        
 
         AddedCourse addedCourse = new AddedCourse();
         addedCourse.setEnrollCd(enrollCd);
