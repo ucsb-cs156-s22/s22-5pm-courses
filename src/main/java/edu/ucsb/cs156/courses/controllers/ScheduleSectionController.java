@@ -62,7 +62,7 @@ public class ScheduleSectionController extends ApiController {
     public ResponseEntity<List<String>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id 
     ) {
-
+        System.out.println("Hello, testing admin");
         PersonalSchedule personalSchedule = personalscheduleRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
         
@@ -76,7 +76,7 @@ public class ScheduleSectionController extends ApiController {
             String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
             listOfJSON.add(currentSection);
         }
-  
+        
         return ResponseEntity.ok().body(listOfJSON);
     }
 
