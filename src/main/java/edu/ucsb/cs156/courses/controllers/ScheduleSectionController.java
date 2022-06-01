@@ -57,7 +57,7 @@ public class ScheduleSectionController extends ApiController {
 
     @ApiOperation(value = "List all sections in a personal schedule, ADMIN")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("")
+    @GetMapping("/admin")
     public ResponseEntity<List<String>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id 
     ) {
