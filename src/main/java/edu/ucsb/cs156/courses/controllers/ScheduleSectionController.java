@@ -49,10 +49,10 @@ public class ScheduleSectionController extends ApiController {
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
 
-    @ApiOperation(value = "List all sections in a personal schedule")
+    @ApiOperation(value = "List all sections in a personal schedule, ADMIN")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/admin/all")
-    public ResponseEntity<List<String>> thisUsersSchedules(
+    @GetMapping("/list/admin")
+    public ResponseEntity<List<String>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id 
     ) {
         PersonalSchedule personalSchedule = personalscheduleRepository.findById(id)
@@ -68,6 +68,29 @@ public class ScheduleSectionController extends ApiController {
         }
 
 
+        return ResponseEntity.ok().body(listOfJSON);
+    }
+
+
+    @ApiOperation(value = "List all sections in a schedule (if it belongs to current user)")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PutMapping("/list")
+    public ResponseEntity<List<String>> thisUserSections(
+            @ApiParam("id") @RequestParam Long id) {
+        User currentUser = getCurrentUser().getUser();
+        PersonalSchedule personalSchedule = personalscheduleRepository.findByIdAndUser(id, currentUser)
+          .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
+
+        var quarter = personalSchedule.getQuarter();
+        var classesAdded = personalSchedule.getAddedCourses();
+        List<String> listOfJSON = Collections.<String>emptyList();
+        for(AddedCourse currentClass : classesAdded)
+        {
+            String enrollCode = currentClass.getEnrollCd();
+            String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
+            listOfJSON.add(currentSection);
+        }
+  
         return ResponseEntity.ok().body(listOfJSON);
     }
     
