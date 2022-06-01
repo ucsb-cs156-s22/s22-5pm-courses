@@ -89,7 +89,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         when(addedCourseRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
         MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=7"))
-                                .andExpect(status().isUnauthorized()).andReturn();
+                                .andExpect(status().isForbidden()).andReturn();
         
         verify(personalscheduleRepository, times(1)).findById(eq(7L));
         Map<String, Object> json = responseToJson(response);
