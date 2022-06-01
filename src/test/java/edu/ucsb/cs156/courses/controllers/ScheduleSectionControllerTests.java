@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import edu.ucsb.cs156.courses.repositories.UserRepository;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
@@ -42,6 +43,9 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
     @MockBean
     UserRepository userRepository;
+
+    @MockBean
+    UCSBCurriculumService ucsbcirService;
 
     @Test
     public void sections_admin_all__logged_out__returns_403() throws Exception {
