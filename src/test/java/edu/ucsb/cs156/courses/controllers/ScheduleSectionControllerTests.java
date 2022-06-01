@@ -118,6 +118,6 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         mockMvc.perform(get("/api/schedulesection/admin?id=1"))
                                 .andExpect(status().isOk()).andReturn();
         
-        verify(personalscheduleRepository, times(1)).findById(eq(7L));
+        verify(personalscheduleRepository, times(1)).findById(eq(1L));
     }
 }
