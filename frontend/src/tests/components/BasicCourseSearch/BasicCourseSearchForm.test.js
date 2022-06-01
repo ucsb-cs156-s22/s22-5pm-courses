@@ -33,6 +33,8 @@ describe("BasicCourseSearchForm tests", () => {
     toast.mockReturnValue({
       addToast: addToast,
     });
+    jest.spyOn(console, 'error')
+    console.error.mockImplementation(() => null);
   });
 
   test("renders without crashing", () => {

@@ -2,6 +2,7 @@ package edu.ucsb.cs156.courses.services;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpClientErrorException.*;
 import org.springframework.web.client.RestTemplate;
 
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
@@ -46,6 +48,8 @@ public class UCSBCurriculumService  {
     public static final String CURRICULUM_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
 
     public static final String SUBJECTS_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/subjects";
+
+    public static final String SECTION_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classes/{quarter}/{enrollCode}";
 
     public String getJSON(String subjectArea, String quarter, String courseLevel) {
 
@@ -123,5 +127,40 @@ public class UCSBCurriculumService  {
         logger.info("json: {} contentType: {} statusCode: {}",retVal,contentType,statusCode);
         return retVal;
     }
-    
+
+    public String getSectionJSON(String quarter, String enrollCode) {
+        logger.info("quarter={} enrollCode={}", quarter, enrollCode);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("ucsb-api-version", "1.0");
+        headers.set("ucsb-api-key", this.apiKey);
+
+        HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+        String sectionURL = SECTION_ENDPOINT;
+        Map<String, String> uriVariables = Map.of("quarter", quarter, "enrollCode", enrollCode);
+
+        String retVal = "";
+        MediaType contentType=null;
+        HttpStatus statusCode=null;
+        try {
+            ResponseEntity<String> re = restTemplate.exchange(sectionURL, HttpMethod.GET, entity, String.class, uriVariables);
+            contentType = re.getHeaders().getContentType();
+            statusCode = re.getStatusCode();
+            retVal = re.getBody();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            retVal = "{\"error\": \"401: Unauthorized\"}";
+        }
+
+        if (retVal.equals("null"))
+        {
+            retVal = "{\"error\": \"Section not found\"}";
+        }
+
+        logger.info("json: {} contentType: {} statusCode: {}",retVal,contentType,statusCode);
+        return retVal;
+    }
+
 }

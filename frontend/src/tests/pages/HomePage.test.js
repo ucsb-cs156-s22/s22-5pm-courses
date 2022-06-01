@@ -32,8 +32,14 @@ describe("HomePage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
+    jest.spyOn(console, 'error')
+    console.error.mockImplementation(() => null);
   });
 
+  afterEach(() => {
+    console.error.mockRestore();
+  });
+  
   const queryClient = new QueryClient();
   test("renders without crashing", () => {
     render(
