@@ -82,7 +82,7 @@ public class ScheduleSectionController extends ApiController {
 
     @ApiOperation(value = "Get sections from a single schedule (if it belongs to current user)")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping("")
+    @GetMapping("")
     public ResponseEntity<List<String>> thisUserSections(
             @ApiParam("id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
