@@ -74,7 +74,22 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         when(addedCourseRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
         MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=7"))
-                                .andExpect(status().isNotFound()).andReturn();
+                                .andExpect(status().isNotAcceptable()).andReturn();
+        
+        verify(personalscheduleRepository, times(1)).findById(eq(7L));
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void sections_user_all_id_does_not_exist() throws Exception {
+
+        when(addedCourseRepository.findById(eq(7L))).thenReturn(Optional.empty());
+
+        MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=7"))
+                                .andExpect(status().isUnauthorized()).andReturn();
         
         verify(personalscheduleRepository, times(1)).findById(eq(7L));
         Map<String, Object> json = responseToJson(response);
