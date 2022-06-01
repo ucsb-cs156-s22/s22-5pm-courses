@@ -108,8 +108,8 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
         PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1).build();
         AddedCourse ac1 = AddedCourse.builder().enrollCd("123").personalSchedule(personalSchedule).id(1).build();
-        List<AddedCourse> listac1 = Collections.<AddedCourse>emptyList();
-        //listac1.add(ac1);
+        List<AddedCourse> listac1 = new ArrayList<AddedCourse>();
+        listac1.add(ac1);
         when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
 
 
