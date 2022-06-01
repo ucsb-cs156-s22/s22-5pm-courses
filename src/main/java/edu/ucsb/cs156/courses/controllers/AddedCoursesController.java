@@ -72,7 +72,7 @@ public class AddedCoursesController extends ApiController{
         else
         {
             //Reject POST request if the quarter doesn't match the one on the psId
-            currentSchedule = personalSchedule.get();
+            PersonalSchedule currentSchedule = personalSchedule.get();
             String retVal = ucsbCurriculumService.getSectionJSON(currentSchedule.getQuarter(), enrollCd);
             if  (retVal == "{\"error\": \"Section not found\"}"){
                 throw new IllegalArgumentException("The enrollCd is not exist in the given quarter");
