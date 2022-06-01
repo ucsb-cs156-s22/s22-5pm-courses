@@ -58,24 +58,25 @@ public class ScheduleSectionController extends ApiController {
     @ApiOperation(value = "List all sections in a personal schedule, ADMIN")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
-    public ResponseEntity<List<String>> thisScheduleSections(
+    public List<ResponseEntity<String>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id 
     ) {
         PersonalSchedule personalSchedule = personalscheduleRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
+        
         var quarter = personalSchedule.getQuarter();
         Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
 
-        List<String> listOfJSON = Collections.<String>emptyList();
+        List<ResponseEntity<String>> listOfJSON = Collections.<ResponseEntity<String>>emptyList();
         for(AddedCourse currentClass : classesAdded)
         {
             String enrollCode = currentClass.getEnrollCd();
             String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
-            listOfJSON.add(currentSection);
+            listOfJSON.add(ResponseEntity.ok().body(currentSection));
+            
         }
 
-
-        return ResponseEntity.ok().body(listOfJSON);
+        return listOfJSON;
     }
 
 
