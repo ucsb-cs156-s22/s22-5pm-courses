@@ -75,7 +75,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void sections_admin_logged_in__returns_OK() throws Exception {
-        mockMvc.perform(get("/api/schedulesection/all?id=1"))
+        mockMvc.perform(get("/api/schedulesection/admin/all?id=1"))
                 .andExpect(status().is(200));
     }
 
@@ -88,7 +88,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         when(addedCourseRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
         MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=7"))
-                                .andExpect(status().isNotAcceptable()).andReturn();
+                                .andExpect(status().is(404)).andReturn();
         
         verify(personalscheduleRepository, times(1)).findById(eq(7L));
         Map<String, Object> json = responseToJson(response);
@@ -103,7 +103,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         when(addedCourseRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
         MvcResult response = mockMvc.perform(get("/api/schedulesection/admin/all?id=7"))
-                                .andExpect(status().is(401)).andReturn();
+                                .andExpect(status().is(403)).andReturn();
         
         verify(personalscheduleRepository, times(1)).findById(eq(7L));
         Map<String, Object> json = responseToJson(response);
