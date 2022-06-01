@@ -80,17 +80,17 @@ public class Section {
   /** Concurrent courses for the section */
   //@Column
   //@ElementCollection(targetClass=String.class)
-  //private List<String> concurrentCourses;
+  private List<String> concurrentCourses;
 
   /**
    * List of {@link TimeLocation} objects for this course
    */
   //@Column
   //@ElementCollection(targetClass=TimeLocation.class)
-  //private List<TimeLocation> timeLocations;
+  private List<TimeLocation> timeLocations;
   /**
    * List of {@link Instructor} objects for this course
    */
   //@OneToMany(targetEntity=Section.class, mappedBy="college", fetch=FetchType.EAGER)
-  //private List<Instructor> instructors;
+  private List<Instructor> instructors;
 }
