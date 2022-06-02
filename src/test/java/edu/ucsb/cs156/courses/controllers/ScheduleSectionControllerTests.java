@@ -83,7 +83,11 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "USER" })
     @Test
     public void sections__user_logged_in__returns_404() throws Exception {
-        when(currentUserService.getCurrentUser()).thenReturn(null);
+        User u1 = User.builder().id(1L).build();
+        CurrentUser curUser = CurrentUser.builder().user(u1).build();
+        when(currentUserService.getCurrentUser()).thenReturn(curUser);
+        //when(currentUserService.getCurrentUser()).thenReturn(null);
+        when(personalscheduleRepository.findByIdAndUser(1L, u1)).thenReturn(null);
         mockMvc.perform(get("/api/schedulesection?id=1"))
                 .andExpect(status().is(404));
     }
