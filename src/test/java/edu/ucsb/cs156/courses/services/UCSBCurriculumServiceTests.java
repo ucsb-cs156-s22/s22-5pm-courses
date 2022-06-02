@@ -212,7 +212,8 @@ public class UCSBCurriculumServiceTests {
         String result = ucs.getSectionJSON(quarter, enrollCode);
         assertEquals(expectedResult, result);
     }
-    
+
+  
     @Test
     public void test_getConvertedSections() throws Exception {
         String expectedResult = CoursePageFixtures.COURSE_PAGE_JSON_MATH3B;
