@@ -85,9 +85,9 @@ describe("SectionsIndexPage tests", () => {
             </QueryClientProvider>
         );
 
-        expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-        expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
+        expect(await screen.findByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 8");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 9");
+        expect(screen.getByTestId(`${testId}-cell-row-2-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 16");
 
     });
 
@@ -104,9 +104,9 @@ describe("SectionsIndexPage tests", () => {
             </QueryClientProvider>
         );
 
-        expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-        expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
+        expect(await screen.findByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 8");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 9");
+        expect(screen.getByTestId(`${testId}-cell-row-2-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 16");
 
     });
 
@@ -132,35 +132,7 @@ describe("SectionsIndexPage tests", () => {
         expect(errorMessage).toMatch("Error communicating with backend via GET on /api/sections/all");
         restoreConsole();
 
-        expect(screen.queryByTestId(`${testId}-cell-row-0-col-id`)).not.toBeInTheDocument();
-    });
-
-
-    // to be uncommented when Delete is implemented
-    test("what happens when you click delete, admin", async () => {
-        setupAdminUser();
-        const queryClient = new QueryClient();
-        axiosMock.onGet("/api/sections/all").reply(200, sectionsFixtures.threeSections);
-        axiosMock.onDelete("/api/sections").reply(200, "Section with id 1 was deleted");
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <SectionsIndexPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-        expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
-
-        const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
-        expect(deleteButton).toBeInTheDocument();
-
-        fireEvent.click(deleteButton);
-
-        await waitFor(() => { expect(mockToast).toBeCalledWith("Section with id 1 was deleted") });
+        expect(screen.queryByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).not.toBeInTheDocument();
     });
 
 });

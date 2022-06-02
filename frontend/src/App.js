@@ -13,7 +13,6 @@ import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSch
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
 import PersonalSchedulesDetailPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailPage";
 
-//import SectionsTable from "main/components/Sections/SectionsTable"
 import SectionsIndexPage from "main/pages/Sections/SectionsIndexPage";
 
 

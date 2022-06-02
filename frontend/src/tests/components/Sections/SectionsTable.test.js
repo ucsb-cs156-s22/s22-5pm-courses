@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { _fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
@@ -59,7 +59,7 @@ describe("UserTable tests", () => {
         );
     });
 
-    test("Has the expected column headers and content for Ordinary User", () => {
+    test("Has the expected column headers and content for Ordinary User", async() => {
 
         const currentUser = currentUserFixtures.userOnly;
 
@@ -71,8 +71,10 @@ describe("UserTable tests", () => {
             </QueryClientProvider>
         );
 
-        const expectedHeaders = ["Quarter", "Course Level", "Subject Area"];
-        const expectedFields = ["quarter", "courseLevel", "subjectArea"];
+        const expectedHeaders = ["Quarter", "Course Number", "Course Title", "Days", "Begin Time", "End Time", 
+        "Enrolled", "Max. Enrollment"];
+        const expectedFields = ["courseInfo.quarter", "courseInfo.courseId", "courseInfo.title", "section.timeLocations[0].days", 
+        "section.timeLocations[0].beginTime", "section.timeLocations[0].endTime", "section.enrolledTotal", "section.maxEnroll"];
         const testId = "SectionsTable";
 
         expectedHeaders.forEach((headerText) => {
@@ -85,20 +87,12 @@ describe("UserTable tests", () => {
             expect(header).toBeInTheDocument();
         });
 
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-
-        const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
-        expect(editButton).toBeInTheDocument();
-        expect(editButton).toHaveClass("btn-primary");
-
-        const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
-        expect(deleteButton).toBeInTheDocument();
-        expect(deleteButton).toHaveClass("btn-danger");
+        await waitFor( ()=> expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 8"));
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 9");
 
     });
 
-    test("Has the expected column headers and content for adminUser", () => {
+    test("Has the expected column headers and content for adminUser", async () => {
 
         const currentUser = currentUserFixtures.adminUser;
 
@@ -110,8 +104,10 @@ describe("UserTable tests", () => {
             </QueryClientProvider>
         );
 
-        const expectedHeaders = ["Quarter", "Course Level", "Subject Area"];
-        const expectedFields = ["quarter", "courseLevel", "subjectArea"];
+        const expectedHeaders = ["Quarter", "Course Number", "Course Title", "Days", "Begin Time", "End Time", 
+        "Enrolled", "Max. Enrollment"];
+        const expectedFields = ["courseInfo.quarter", "courseInfo.courseId", "courseInfo.title", "section.timeLocations[0].days", 
+        "section.timeLocations[0].beginTime", "section.timeLocations[0].endTime", "section.enrolledTotal", "section.maxEnroll"];
         const testId = "SectionsTable";
 
         expectedHeaders.forEach((headerText) => {
@@ -124,103 +120,9 @@ describe("UserTable tests", () => {
             expect(header).toBeInTheDocument();
         });
 
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+        await waitFor( () => expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 8"));
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 9");
 
-        const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
-        expect(editButton).toBeInTheDocument();
-        expect(editButton).toHaveClass("btn-primary");
-
-        const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
-        expect(deleteButton).toBeInTheDocument();
-        expect(deleteButton).toHaveClass("btn-danger");
     });
 
-    test("Edit button navigates to the edit page for Ordinary user", async () => {
-
-        const currentUser = currentUserFixtures.userOnly;
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <SectionsTable sections={sectionsFixtures.threeSections} currentUser={currentUser} />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        expect(await screen.findByTestId(`SectionsTable-cell-row-0-col-id`)).toHaveTextContent("1");
-
-        const editButton = screen.getByTestId(`SectionsTable-cell-row-0-col-Edit-button`);
-        expect(editButton).toBeInTheDocument();
-
-        fireEvent.click(editButton);
-
-        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/sections/edit/1'));
-    });
-
-    test("Edit button navigates to the edit page for admin user", async () => {
-
-        const currentUser = currentUserFixtures.adminUser;
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <SectionsTable sections={sectionsFixtures.threeSections} currentUser={currentUser} />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        expect(await screen.findByTestId(`SectionsTable-cell-row-0-col-id`)).toHaveTextContent("1");
-
-        const editButton = screen.getByTestId(`SectionsTable-cell-row-0-col-Edit-button`);
-        expect(editButton).toBeInTheDocument();
-
-        fireEvent.click(editButton);
-
-        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/sections/edit/1'));
-    });
-
-    test("Delete button calls delete callback for ordinary user", async () => {
-
-        const currentUser = currentUserFixtures.userOnly;
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <SectionsTable sections={sectionsFixtures.threeSections} currentUser={currentUser} />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        expect(await screen.findByTestId(`SectionsTable-cell-row-0-col-id`)).toHaveTextContent("1");
-
-        const deleteButton = screen.getByTestId(`SectionsTable-cell-row-0-col-Delete-button`);
-        expect(deleteButton).toBeInTheDocument();
-
-        fireEvent.click(deleteButton);
-
-        await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
-    });
-
-    test("Delete button calls delete callback for admin user", async () => {
-
-        const currentUser = currentUserFixtures.adminUser;
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <SectionsTable sections={sectionsFixtures.threeSections} currentUser={currentUser} />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        expect(await screen.findByTestId(`SectionsTable-cell-row-0-col-id`)).toHaveTextContent("1");
-
-        const deleteButton = screen.getByTestId(`SectionsTable-cell-row-0-col-Delete-button`);
-        expect(deleteButton).toBeInTheDocument();
-
-        fireEvent.click(deleteButton);
-
-        await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
-    });
 });

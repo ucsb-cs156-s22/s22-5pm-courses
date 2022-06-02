@@ -5,16 +5,36 @@ export default function SectionsTable({ sections }) {
 
     const columns = [
         {
-            Header: 'Course Level',
-            accessor: 'courseLevel',
-        },
-        {
             Header: 'Quarter',
-            accessor: 'quarter',
+            accessor: 'courseInfo.quarter',
         },
         {
-            Header: 'Subject Area',
-            accessor: 'subjectArea',
+            Header: 'Course Number',
+            accessor: 'courseInfo.courseId',
+        },
+        {
+            Header: 'Course Title',
+            accessor: 'courseInfo.title',
+        },
+        {
+            Header: 'Days',
+            accessor: 'section.timeLocations[0].days',
+        },
+        {
+            Header: 'Begin Time',
+            accessor: 'section.timeLocations[0].beginTime',
+        },
+        {
+            Header: 'End Time',
+            accessor: 'section.timeLocations[0].endTime',
+        },
+        {
+            Header: 'Enrolled',
+            accessor: 'section.enrolledTotal',
+        },
+        {
+            Header: 'Max. Enrollment',
+            accessor: 'section.maxEnroll',
         },
     ];
 
@@ -25,7 +45,5 @@ export default function SectionsTable({ sections }) {
     />;
 };
 
-//courseInfo.quarter -> Quarter
-// courseInfo.courseId -> Subject Area
-// courseInfo.
+
 
