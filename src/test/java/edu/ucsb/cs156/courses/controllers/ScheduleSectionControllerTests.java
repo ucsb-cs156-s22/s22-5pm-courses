@@ -120,7 +120,8 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         List<AddedCourse> listac1 = new ArrayList<AddedCourse>();
         listac1.add(ac1);
         when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
-
+        //String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
+        when(ucsbcirService.getSectionJSON("2022W","123")).thenReturn("Section Test");
 
         MvcResult response = mockMvc.perform(get("/api/schedulesection/admin?id=1"))
                                 .andExpect(status().isOk()).andReturn();
@@ -130,6 +131,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         List<String> resultList =  mapper.readValue(responseString, List.class);
         System.out.println("JSON" + resultList);
+        assertEquals("Section Test", resultList.get(0));
         //assertEquals("AddedCourse", json.get("type"));
         //assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
     }
