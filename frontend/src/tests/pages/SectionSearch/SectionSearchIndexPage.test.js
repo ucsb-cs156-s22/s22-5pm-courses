@@ -91,7 +91,5 @@ describe("SectionSearchIndexPage tests", () => {
       subjectArea: "ANTH",
       courseLevel: "G",
     });
-
-    // expect(screen.getByText("CMPSC")).toBeInTheDocument();
   });
 });
