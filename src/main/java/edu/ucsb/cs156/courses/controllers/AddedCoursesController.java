@@ -46,8 +46,8 @@ public class AddedCoursesController extends ApiController{
     @Autowired
     PersonalScheduleRepository personalScheduleRepository;
 
-    // @Autowired
-    // UCSBCurriculumService ucsbCurriculumService;
+    @Autowired
+    UCSBCurriculumService ucsbCurriculumService;
 
     @ApiOperation(value = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -69,16 +69,16 @@ public class AddedCoursesController extends ApiController{
         if (!personalSchedule.isPresent())
         {
             //Reject POST request if the psId is not the psId of an existing Personal Schedule
-            throw new IllegalArgumentException("PersonalSchedule doesn't exist!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PersonalSchedule doesn't exist!");
         }
         else
         {
             // Reject POST request if the quarter doesn't match the one on the psId
-            // PersonalSchedule currentSchedule = personalSchedule.get();
-            // String retVal = ucsbCurriculumService.getSectionJSON(currentSchedule.getQuarter(), enrollCd);
-            // if  (retVal == "{\"error\": \"Section not found\"}"){
-            //     throw new IllegalArgumentException("The enrollCd is not exist in the given quarter");
-            // }
+            PersonalSchedule currentSchedule = personalSchedule.get();
+            String retVal = ucsbCurriculumService.getSectionJSON(currentSchedule.getQuarter(), enrollCd);
+            if  (retVal == "{\"error\": \"Section not found\"}"){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The enrollCd is not exist in the given quarter");
+            }
         }
 
 
