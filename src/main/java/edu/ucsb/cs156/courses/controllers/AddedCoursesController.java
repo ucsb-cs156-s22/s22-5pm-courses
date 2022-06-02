@@ -41,11 +41,11 @@ import java.util.Optional;
 
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 
-@Api(description = "ScheduleSections")
-@RequestMapping("/api/schedulesection")
+@Api(description = "AddedCourses")
+@RequestMapping("/api/addedcourses")
 @RestController
 @Slf4j
-public class ScheduleSectionController extends ApiController {
+public class AddedCoursesController extends ApiController {
 
     @Autowired
     PersonalScheduleRepository personalscheduleRepository;
@@ -60,12 +60,12 @@ public class ScheduleSectionController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public ResponseEntity<List<String>> thisScheduleSections(
-            @ApiParam("id") @RequestParam Long id 
+            @ApiParam("id") @RequestParam Long id
     ) {
         System.out.println("Hello, testing admin");
         PersonalSchedule personalSchedule = personalscheduleRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
-        
+
         var quarter = personalSchedule.getQuarter();
         Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
         List<String> listOfJSON = new ArrayList<>();
@@ -76,7 +76,7 @@ public class ScheduleSectionController extends ApiController {
             String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
             listOfJSON.add(currentSection);
         }
-        
+
         return ResponseEntity.ok().body(listOfJSON);
     }
 
@@ -99,8 +99,8 @@ public class ScheduleSectionController extends ApiController {
             String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
             listOfJSON.add(currentSection);
         }
-  
+
         return ResponseEntity.ok().body(listOfJSON);
     }
-    
+
 }

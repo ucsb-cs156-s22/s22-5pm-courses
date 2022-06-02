@@ -45,9 +45,9 @@ import edu.ucsb.cs156.courses.models.CurrentUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-@WebMvcTest(controllers = ScheduleSectionController.class)
+@WebMvcTest(controllers = AddedCoursesController.class)
 @Import(TestConfig.class)
-public class ScheduleSectionControllerTests extends ControllerTestCase {
+public class AddedCoursesControllerTests extends ControllerTestCase {
 
     @MockBean
     PersonalScheduleRepository personalscheduleRepository;
@@ -69,21 +69,21 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
     @Test
     public void sections_admin_all__logged_out__returns_403() throws Exception {
-        mockMvc.perform(get("/api/schedulesection/admin?id=1"))
+        mockMvc.perform(get("/api/addedcourses/admin?id=1"))
                 .andExpect(status().is(403));
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
     public void sections_admin_all__user_logged_in__returns_403() throws Exception {
-        mockMvc.perform(get("/api/schedulesection/admin?id=1"))
+        mockMvc.perform(get("/api/addedcourses/admin?id=1"))
                 .andExpect(status().is(403));
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
     public void sections__user_logged_in__returns_404() throws Exception {
-        mockMvc.perform(get("/api/schedulesection2?id=1"))
+        mockMvc.perform(get("/api/addedcourses2?id=1"))
                 .andExpect(status().is(404));
     }
 
@@ -91,7 +91,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void sections_admin_logged_in__returns_404() throws Exception {
-        mockMvc.perform(get("/api/schedulesection/admin?id=1"))
+        mockMvc.perform(get("/api/addedcourses/admin?id=1"))
                 .andExpect(status().is(404));
     }
 
@@ -103,9 +103,9 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
         when(addedCourseRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
-        MvcResult response = mockMvc.perform(get("/api/schedulesection/admin?id=7"))
+        MvcResult response = mockMvc.perform(get("/api/addedcourses/admin?id=7"))
                                 .andExpect(status().is(404)).andReturn();
-        
+
         verify(personalscheduleRepository, times(1)).findById(eq(7L));
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
@@ -127,9 +127,9 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
         when(ucsbcirService.getSectionJSON("2022W","123")).thenReturn("Section Test");
 
-        MvcResult response = mockMvc.perform(get("/api/schedulesection/admin?id=1"))
+        MvcResult response = mockMvc.perform(get("/api/addedcourses/admin?id=1"))
                                 .andExpect(status().isOk()).andReturn();
-        
+
         verify(personalscheduleRepository, times(1)).findById(eq(1L));
         String responseString = response.getResponse().getContentAsString();
         List<String> resultList =  mapper.readValue(responseString, List.class);
@@ -153,12 +153,12 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         List<AddedCourse> listac1 = new ArrayList<AddedCourse>();
         listac1.add(ac1);
         when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
- 
+
         when(ucsbcirService.getSectionJSON("2022W","123")).thenReturn("Section Test");
 
-        MvcResult response = mockMvc.perform(get("/api/schedulesection?id=1"))
+        MvcResult response = mockMvc.perform(get("/api/addedcourses?id=1"))
                                 .andExpect(status().isOk()).andReturn();
-        
+
         verify(personalscheduleRepository, times(1)).findByIdAndUser(1L, u1);
 
         ObjectMapper mapper = new ObjectMapper();
