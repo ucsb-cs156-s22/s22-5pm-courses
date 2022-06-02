@@ -11,7 +11,6 @@ import { sectionsFixtures } from "fixtures/sectionsFixtures";
 import { apiCurrentUserFixtures }  from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
-import { coursesFixtures } from "fixtures/courseFixtures";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
