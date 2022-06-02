@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import edu.ucsb.cs156.courses.repositories.UserRepository;
+import edu.ucsb.cs156.courses.services.CurrentUserService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import edu.ucsb.cs156.courses.ControllerTestCase;
@@ -59,6 +60,9 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
     @MockBean
     UCSBCurriculumService ucsbcirService;
+
+    @MockBean
+    CurrentUserService currentUserService;
 
     @Autowired
     public ObjectMapper mapper;
