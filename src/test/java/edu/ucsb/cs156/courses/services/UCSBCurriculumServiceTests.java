@@ -8,6 +8,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.HttpClientErrorException;
@@ -153,6 +155,64 @@ public class UCSBCurriculumServiceTests {
         assertEquals(expectedResult, result);
     }
 
+    @Test
+    public void test_getSectionJSON_success() throws Exception {
+        String expectedResult = "[ { quarter: \"20224\", classSections: [{ enrollCode: \"18507\" }] } ]";
+
+        String quarter = "20224";
+        String enrollCode = "18507";
+
+        String expectedURL = UCSBCurriculumService.SECTION_ENDPOINT.replace("{quarter}", quarter).replace("{enrollCode}", enrollCode);
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+            .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("ucsb-api-version", "1.0"))
+            .andExpect(header("ucsb-api-key", apiKey))
+            .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+        String result = ucs.getSectionJSON(quarter, enrollCode);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void test_getSectionJSON_section_not_found() throws Exception {
+        String expectedResult = "{\"error\": \"Section not found\"}";
+
+        String quarter = "20224";
+        String enrollCode = "99999";
+
+        String expectedURL = UCSBCurriculumService.SECTION_ENDPOINT.replace("{quarter}", quarter).replace("{enrollCode}", enrollCode);
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+            .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("ucsb-api-version", "1.0"))
+            .andExpect(header("ucsb-api-key", apiKey))
+            .andRespond(withSuccess("null", MediaType.APPLICATION_JSON));
+
+        String result = ucs.getSectionJSON(quarter, enrollCode);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void test_getSectionJSON_unauthorized_exception() throws Exception {
+        String expectedResult = "{\"error\": \"401: Unauthorized\"}";
+
+        String quarter = "20224";
+        String enrollCode = "99999";
+
+        String expectedURL = UCSBCurriculumService.SECTION_ENDPOINT.replace("{quarter}", quarter).replace("{enrollCode}", enrollCode);
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+            .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+            .andRespond(withUnauthorizedRequest());
+
+        String result = ucs.getSectionJSON(quarter, enrollCode);
+        assertEquals(expectedResult, result);
+    }
+  
     @Test
     public void test_getConvertedSections() throws Exception {
         String expectedResult = CoursePageFixtures.COURSE_PAGE_JSON_MATH3B;
