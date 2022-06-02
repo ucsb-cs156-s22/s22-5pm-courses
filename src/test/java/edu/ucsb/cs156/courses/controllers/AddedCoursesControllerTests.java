@@ -50,6 +50,19 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         mockMvc.perform(post("/api/addedcourses/post"))
                 .andExpect(status().is(403));
     }
+    // Authorization tests for /api/addedcourses/all/?psID=x
+    @Test
+    public void api_addedcourses_all__logged_out__returns_403() throws Exception {
+        mockMvc.perform(get("/api/addedcourses/all?psId=1"))
+                .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_addedcourses_all__user_logged_in__returns_200() throws Exception {
+        mockMvc.perform(get("/api/addedcourses/all?psId=1"))
+                .andExpect(status().isOk());
+    }
 
     @WithMockUser(roles = { "USER" })
     @Test
@@ -74,6 +87,36 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
         // assert
         verify(addedCourseRepository, times(1)).save(expectedCourses);
+        String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_addedcourses_all__user_logged_in__returns_only_schedules_for_user() throws Exception {
+
+        // arrange
+
+        User thisUser = currentUserService.getCurrentUser().getUser();
+        PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20222").user(thisUser).id(2L).build();
+
+        AddedCourse c1 = AddedCourse.builder().enrollCd("1211").personalSchedule(p1).user(thisUser).id(1L).build();
+        AddedCourse c2 = AddedCourse.builder().enrollCd("1212").personalSchedule(p1).user(thisUser).id(2L).build();
+        AddedCourse c3 = AddedCourse.builder().enrollCd("1213").personalSchedule(p1).user(thisUser).id(3L).build();
+        
+        ArrayList<AddedCourse> expectedCourses = new ArrayList<>();
+        expectedCourses.addAll(Arrays.asList(c1, c2, c3));
+
+        when(addedCourseRepository.findAllByPersonalSchedule(p1)).thenReturn(expectedCourses);
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/addedcourses/all?psId=1"))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(addedCourseRepository, times(1)).findAllByPersonalSchedule(eq(p1));
         String expectedJson = mapper.writeValueAsString(expectedCourses);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
