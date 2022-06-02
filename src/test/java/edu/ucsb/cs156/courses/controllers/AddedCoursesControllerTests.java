@@ -53,6 +53,14 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "USER" })
     @Test
+    public void api_addedcourses_post__wrong_enrollcode__returns_400() throws Exception {
+        mockMvc.perform(post("/api/addedcourses/post?enrollCd=wrong code length&psId=123")
+                .with(csrf()))
+            .andExpect(status().is(400));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
     public void api_addedcourses_post__user_logged_in() throws Exception {
         // arrange
 

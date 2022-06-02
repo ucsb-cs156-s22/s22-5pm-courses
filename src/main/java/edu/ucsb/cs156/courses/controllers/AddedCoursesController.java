@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -44,24 +46,24 @@ public class AddedCoursesController extends ApiController{
     @Autowired
     PersonalScheduleRepository personalScheduleRepository;
 
-    @Autowired
-    UCSBCurriculumService ucsbCurriculumService;
+    // @Autowired
+    // UCSBCurriculumService ucsbCurriculumService;
 
     @ApiOperation(value = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
     public AddedCourse postCourse(
             @ApiParam("enrollCd") @RequestParam String enrollCd,
-            @ApiParam("psId") @RequestParam long psId) {
+            @ApiParam("psId") @RequestParam Long psId) {
 
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={} psId={}", currentUser, psId);
         Optional<PersonalSchedule> personalSchedule = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser());
-        
-            
-        if (String.valueOf(psId).length() > 5){
-            //Reject POST request if psId is more than five digits
-            throw new IllegalArgumentException("psId should be no more than five digits");
+
+
+        if (String.valueOf(enrollCd).length() > 5){
+            //Reject POST request if enrollCd is more than five digits
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "enrollCd should be no more than five digits");
         }
 
         if (!personalSchedule.isPresent())
@@ -71,14 +73,14 @@ public class AddedCoursesController extends ApiController{
         }
         else
         {
-            //Reject POST request if the quarter doesn't match the one on the psId
-            PersonalSchedule currentSchedule = personalSchedule.get();
-            String retVal = ucsbCurriculumService.getSectionJSON(currentSchedule.getQuarter(), enrollCd);
-            if  (retVal == "{\"error\": \"Section not found\"}"){
-                throw new IllegalArgumentException("The enrollCd is not exist in the given quarter");
-            }
+            // Reject POST request if the quarter doesn't match the one on the psId
+            // PersonalSchedule currentSchedule = personalSchedule.get();
+            // String retVal = ucsbCurriculumService.getSectionJSON(currentSchedule.getQuarter(), enrollCd);
+            // if  (retVal == "{\"error\": \"Section not found\"}"){
+            //     throw new IllegalArgumentException("The enrollCd is not exist in the given quarter");
+            // }
         }
-        
+
 
         AddedCourse addedCourse = new AddedCourse();
         addedCourse.setEnrollCd(enrollCd);
