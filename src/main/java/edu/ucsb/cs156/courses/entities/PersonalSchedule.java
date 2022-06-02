@@ -33,4 +33,7 @@ public class PersonalSchedule {
   private String description;
   private String quarter;
 
+  @OneToMany(mappedBy="personalSchedule")
+  private List<AddedCourse> addedCourses;
+
 }
