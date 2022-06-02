@@ -44,46 +44,11 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
     @MockBean
     UserRepository userRepository;
 
-    // Authorization tests for /api/addedcourses/post
-    @Test
-    public void api_addedcourses_post__logged_out__returns_403() throws Exception {
-        mockMvc.perform(post("/api/addedcourses/post"))
-                .andExpect(status().is(403));
-    }
     // Authorization tests for /api/addedcourses/all/?psID=x
     @Test
     public void api_addedcourses_all__logged_out__returns_403() throws Exception {
         mockMvc.perform(get("/api/addedcourses/all?psId=1"))
                 .andExpect(status().is(403));
-    }
-
-
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_addedcourses_post__user_logged_in() throws Exception {
-        // arrange
-
-        User thisUser = currentUserService.getCurrentUser().getUser();
-
-        PersonalSchedule personalSchedule = PersonalSchedule.builder().user(thisUser).name("Test schedule").description("A test personal schedule").quarter("20224").id(123L).build();
-
-        when(personalScheduleRepository.findByIdAndUser(eq(123L), eq(thisUser))).thenReturn(Optional.of(personalSchedule));
-
-        AddedCourse expectedCourses = AddedCourse.builder().enrollCd("Test code").personalSchedule(personalSchedule).id(0L).build();
-
-        when(addedCourseRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
-
-        // act
-        MvcResult response = mockMvc.perform(
-                post("/api/addedcourses/post?enrollCd=Test code&psId=123")
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
-
-        // assert
-        verify(addedCourseRepository, times(1)).save(expectedCourses);
-        String expectedJson = mapper.writeValueAsString(expectedCourses);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals(expectedJson, responseString);
     }
 
     @WithMockUser(roles = { "USER" })

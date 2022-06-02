@@ -42,30 +42,6 @@ public class AddedCoursesController extends ApiController{
     @Autowired
     PersonalScheduleRepository personalScheduleRepository;
 
-    @ApiOperation(value = "Create a new course")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/post")
-    public AddedCourse postCourse(
-            @ApiParam("enrollCd") @RequestParam String enrollCd,
-            @ApiParam("psId") @RequestParam long psId) {
-
-        CurrentUser currentUser = getCurrentUser();
-        log.info("currentUser={} psId={}", currentUser, psId);
-        Optional<PersonalSchedule> personalSchedule = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser());
-
-        // if (!personalSchedule.isPresent())
-        // {
-        //     // TODO: Rejection of POST request somehow
-        // }
-        // TODO: Get quarter from personalSchedule and determine if enrollCode is valid thru UCSB courses API
-
-        AddedCourse addedCourse = new AddedCourse();
-        addedCourse.setEnrollCd(enrollCd);
-        addedCourse.setPersonalSchedule(personalSchedule.get());
-        AddedCourse savedAddedCourse = addedCourseRepository.save(addedCourse);
-        return savedAddedCourse;
-    }
-
     @ApiOperation(value = "List this Personal Schedule's Added Courses")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
