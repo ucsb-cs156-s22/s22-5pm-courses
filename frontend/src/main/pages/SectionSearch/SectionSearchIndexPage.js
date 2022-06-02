@@ -2,7 +2,7 @@ import { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import SectionSearchForm from "main/components/SectionSearch/SectionSearchForm";
 import { useBackendMutation } from "main/utils/useBackend";
-import _SectionsTable from "main/components/SectionSearch/SectionSearchTable";
+// import SectionsTable from "main/components/SectionSearch/SectionSearchTable";
 
 export default function SectionSearchIndexPage() {
   const [_sectionJSON, setSectionJSON] = useState([]);
