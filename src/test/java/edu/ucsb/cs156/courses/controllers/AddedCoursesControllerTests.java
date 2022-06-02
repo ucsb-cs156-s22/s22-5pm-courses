@@ -57,12 +57,6 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
                 .andExpect(status().is(403));
     }
 
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_addedcourses_all__user_logged_in__returns_200() throws Exception {
-        mockMvc.perform(get("/api/addedcourses/all?psId=1"))
-                .andExpect(status().isOk());
-    }
 
     @WithMockUser(roles = { "USER" })
     @Test
@@ -99,12 +93,13 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User thisUser = currentUserService.getCurrentUser().getUser();
-        PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20222").user(thisUser).id(2L).build();
 
-        AddedCourse c1 = AddedCourse.builder().enrollCd("1211").personalSchedule(p1).user(thisUser).id(1L).build();
-        AddedCourse c2 = AddedCourse.builder().enrollCd("1212").personalSchedule(p1).user(thisUser).id(2L).build();
-        AddedCourse c3 = AddedCourse.builder().enrollCd("1213").personalSchedule(p1).user(thisUser).id(3L).build();
-        
+        PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(thisUser).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(thisUser))).thenReturn(Optional.of(p1));
+
+        AddedCourse c1 = AddedCourse.builder().enrollCd("1211").personalSchedule(p1).id(1L).build();
+        AddedCourse c2 = AddedCourse.builder().enrollCd("1212").personalSchedule(p1).id(2L).build();
+        AddedCourse c3 = AddedCourse.builder().enrollCd("1213").personalSchedule(p1).id(3L).build();
         ArrayList<AddedCourse> expectedCourses = new ArrayList<>();
         expectedCourses.addAll(Arrays.asList(c1, c2, c3));
 

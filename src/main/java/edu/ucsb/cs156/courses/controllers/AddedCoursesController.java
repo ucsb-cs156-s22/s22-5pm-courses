@@ -71,12 +71,11 @@ public class AddedCoursesController extends ApiController{
     @GetMapping("/all")
     public Iterable<AddedCourse> thisUsersCourses(
             @ApiParam("psId") @RequestParam Long psId) {
-                
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={} psId={}", currentUser, psId);
 
-        PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(psId, currentUser)
-          .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
+        PersonalSchedule personalSchedule = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser())
+            .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
         
         Iterable<AddedCourse> schedulesCourses = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
 
