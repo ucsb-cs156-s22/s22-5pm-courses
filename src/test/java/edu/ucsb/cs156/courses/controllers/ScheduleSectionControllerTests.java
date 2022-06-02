@@ -40,6 +40,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doNothing;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.ucsb.cs156.courses.models.CurrentUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
