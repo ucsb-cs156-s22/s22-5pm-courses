@@ -7,7 +7,7 @@ import SectionsTable from 'main/components/Sections/SectionsTable';
 
 
 export default function SectionSearchIndexPage() {
-  // Stryker disable next-line all
+  // Stryker disable all
   const [sectionJSON, setSectionJSON] = useState([]);
   const objectToAxiosParams = (query) => ({
     url: "/api/sections/basicsearch",
@@ -26,10 +26,9 @@ export default function SectionSearchIndexPage() {
   const mutation = useBackendMutation(
     objectToAxiosParams,
     { onSuccess },
-    // Stryker disable next-line all : hard to set up test for caching
     []
   );
-
+    // Stryker enable all
   async function fetchBasicCourseJSON(_event, query) {
     mutation.mutate(query);
   }
