@@ -78,7 +78,7 @@ public class AddedCoursesController extends ApiController{
         PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(psId, currentUser)
           .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
         
-        Iterable<AddedCourse> schedulesCourses = personalSchedule.getAddedCourses();
+        Iterable<AddedCourse> schedulesCourses = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
 
         return schedulesCourses;
     }
