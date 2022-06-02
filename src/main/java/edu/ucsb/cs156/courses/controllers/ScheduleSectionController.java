@@ -76,8 +76,6 @@ public class ScheduleSectionController extends ApiController {
             String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
             listOfJSON.add(currentSection);
         }
-
-        //List<String> listOfJSON  = new ArrayList<>();
         
         return ResponseEntity.ok().body(listOfJSON);
     }
