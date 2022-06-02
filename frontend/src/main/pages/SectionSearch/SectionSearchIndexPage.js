@@ -2,10 +2,10 @@ import { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import SectionSearchForm from "main/components/SectionSearch/SectionSearchForm";
 import { useBackendMutation } from "main/utils/useBackend";
-
+import _SectionsTable from "main/components/SectionSearch/SectionSearchTable";
 
 export default function SectionSearchIndexPage() {
-  const [_courseJSON, setCourseJSON] = useState([]);
+  const [_sectionJSON, setSectionJSON] = useState([]);
   const objectToAxiosParams = (query) => ({
     url: "/api/sections/basicsearch",
     params: {
@@ -15,8 +15,9 @@ export default function SectionSearchIndexPage() {
     },
   });
 
-  const onSuccess = (courses) => {
-    setCourseJSON(courses.classes);
+  const onSuccess = (section) => {
+    console.log()
+    setSectionJSON(section);
   };
 
   const mutation = useBackendMutation(
@@ -34,6 +35,7 @@ export default function SectionSearchIndexPage() {
       <div className="pt-2">
         <h5>Section Search</h5>
         <SectionSearchForm fetchJSON={fetchBasicCourseJSON} />
+        {/* <SectionsTable sections={sectionJSON} /> */}
       </div>
     </BasicLayout>
   );
