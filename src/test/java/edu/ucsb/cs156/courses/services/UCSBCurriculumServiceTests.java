@@ -212,7 +212,6 @@ public class UCSBCurriculumServiceTests {
         String result = ucs.getSectionJSON(quarter, enrollCode);
         assertEquals(expectedResult, result);
     }
-
   
     @Test
     public void test_getConvertedSections() throws Exception {
