@@ -165,7 +165,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(get("/api/schedulesection?id=1"))
                                 .andExpect(status().isOk()).andReturn();
         
-        verify(personalscheduleRepository, times(1)).findById(eq(1L));
+        verify(personalscheduleRepository, times(1)).findByIdAndUser(1L, u1);
 
         String responseString = response.getResponse().getContentAsString();
         List<String> resultList =  mapper.readValue(responseString, List.class);
