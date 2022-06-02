@@ -38,6 +38,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doNothing;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 @WebMvcTest(controllers = ScheduleSectionController.class)
 @Import(TestConfig.class)
@@ -54,6 +58,9 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
 
     @MockBean
     UCSBCurriculumService ucsbcirService;
+
+    @Autowired
+    public ObjectMapper mapper;
 
     @Test
     public void sections_admin_all__logged_out__returns_403() throws Exception {
@@ -119,9 +126,11 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
                                 .andExpect(status().isOk()).andReturn();
         
         verify(personalscheduleRepository, times(1)).findById(eq(1L));
-        Map<String, Object> json = responseToJson(response);
-        System.out.println("JSON" + json);
-        assertEquals("AddedCourse", json.get("type"));
-        assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
+        //Map<String, Object> json = responseToJson(response);
+        String responseString = response.getResponse().getContentAsString();
+        List<String> resultList =  mapper.readValue(responseString, List.class);
+        System.out.println("JSON" + resultList);
+        //assertEquals("AddedCourse", json.get("type"));
+        //assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
     }
 }
