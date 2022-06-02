@@ -131,7 +131,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         List<String> resultList =  mapper.readValue(responseString, List.class);
         System.out.println("JSON" + resultList);
-        assertEquals("Section Test", resultList.get(0));
+        assertEquals("Section111111 Test", resultList.get(0));
         //assertEquals("AddedCourse", json.get("type"));
         //assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
     }
