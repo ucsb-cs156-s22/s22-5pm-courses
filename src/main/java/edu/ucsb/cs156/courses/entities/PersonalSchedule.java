@@ -35,5 +35,5 @@ public class PersonalSchedule {
 
   @OneToMany(mappedBy="personalSchedule")
   private List<AddedCourse> addedCourses;
-
+  
 }
