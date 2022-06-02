@@ -164,8 +164,7 @@ describe("AppNavbar tests", () => {
             </QueryClientProvider>
         );
 
-        expect(await screen.findByText("SectionSearch")).toBeInTheDocument();
-        //expect(screen.getByText("Swagger")).toBeInTheDocument();        
+        expect(await screen.findByText("SectionSearch")).toBeInTheDocument();      
     });
 
 });
