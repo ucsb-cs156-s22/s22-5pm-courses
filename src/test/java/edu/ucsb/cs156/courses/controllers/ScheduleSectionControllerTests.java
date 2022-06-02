@@ -83,6 +83,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "USER" })
     @Test
     public void sections__user_logged_in__returns_404() throws Exception {
+        when(currentUserService.getCurrentUser()).thenReturn(null);
         mockMvc.perform(get("/api/schedulesection?id=1"))
                 .andExpect(status().is(404));
     }
