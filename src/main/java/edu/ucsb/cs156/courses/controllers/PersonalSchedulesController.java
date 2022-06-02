@@ -66,7 +66,7 @@ public class PersonalSchedulesController extends ApiController {
 
         return personalschedule;
     }
-
+    
     @ApiOperation(value = "Get a single personal schedule (no matter who it belongs to, admin only)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
