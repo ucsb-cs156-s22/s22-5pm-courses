@@ -57,8 +57,35 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void api_addedcourses_post__wrong_enrollcode__returns_400() throws Exception {
+    public void api_addedcourses_post__wrong_enrollcode_length__returns_400() throws Exception {
         mockMvc.perform(post("/api/addedcourses/post?enrollCd=wrong code length&psId=123")
+                .with(csrf()))
+            .andExpect(status().is(400));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_addedcourses_post__invalid_psid__returns_400() throws Exception {
+        mockMvc.perform(post("/api/addedcourses/post?enrollCd=11111&psId=123")
+                .with(csrf()))
+            .andExpect(status().is(400));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_addedcourses_post__invalid_enrollcode__returns_400() throws Exception {
+        String quarter = "20224";
+        Long psId = 123L;
+        String enrollCode = "99999";
+
+        User thisUser = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalSchedule = PersonalSchedule.builder().user(thisUser).name("Test schedule").description("A test personal schedule").quarter(quarter).id(psId).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(123L), eq(thisUser))).thenReturn(Optional.of(personalSchedule));
+
+        when(ucsbCurriculumService.getSectionJSON(quarter, enrollCode)).thenReturn("{\"error\": \"Section not found\"}");
+
+        mockMvc.perform(post("/api/addedcourses/post?enrollCd={enrollCode}&psId={psId}".replace("{enrollCode}", enrollCode).replace("{psId}", String.valueOf(psId)))
                 .with(csrf()))
             .andExpect(status().is(400));
     }
@@ -71,16 +98,14 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         User thisUser = currentUserService.getCurrentUser().getUser();
 
         PersonalSchedule personalSchedule = PersonalSchedule.builder().user(thisUser).name("Test schedule").description("A test personal schedule").quarter("20224").id(123L).build();
-
         when(personalScheduleRepository.findByIdAndUser(eq(123L), eq(thisUser))).thenReturn(Optional.of(personalSchedule));
 
-        AddedCourse expectedCourses = AddedCourse.builder().enrollCd("Test code").personalSchedule(personalSchedule).id(0L).build();
-
+        AddedCourse expectedCourses = AddedCourse.builder().enrollCd("00018").personalSchedule(personalSchedule).id(0L).build();
         when(addedCourseRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/addedcourses/post?enrollCd=Test code&psId=123")
+                post("/api/addedcourses/post?enrollCd=00018&psId=123")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
