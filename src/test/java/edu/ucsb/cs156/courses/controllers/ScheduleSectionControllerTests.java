@@ -88,7 +88,7 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
         when(currentUserService.getCurrentUser()).thenReturn(curUser);
         //when(currentUserService.getCurrentUser()).thenReturn(null);
         when(personalscheduleRepository.findByIdAndUser(1L, u1)).thenReturn(null);
-        mockMvc.perform(get("/api/schedulesection?id=1"))
+        mockMvc.perform(get("/api/schedulesection2?id=1"))
                 .andExpect(status().is(404));
     }
 
