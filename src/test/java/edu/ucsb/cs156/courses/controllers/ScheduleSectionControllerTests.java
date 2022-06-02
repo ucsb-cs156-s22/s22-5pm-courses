@@ -42,6 +42,10 @@ import static org.mockito.Mockito.doNothing;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+import edu.ucsb.cs156.courses.models.CurrentUser;
+import edu.ucsb.cs156.courses.services.CurrentUserService;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 @WebMvcTest(controllers = ScheduleSectionController.class)
@@ -144,7 +148,8 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
     @Test
     public void sections_user_return_OK() throws Exception {
         User u1 = User.builder().id(1L).build();
-        when(currentUserService.getCurrentUser().getUser()).thenReturn(u1);
+        CurrentUser curUser = CurrentUser.builder().user(u1).build();
+        when(currentUserService.getCurrentUser()).thenReturn(curUser);
 
 
         PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1L).build();
