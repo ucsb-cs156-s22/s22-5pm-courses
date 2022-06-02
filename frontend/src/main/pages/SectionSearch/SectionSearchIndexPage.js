@@ -5,6 +5,7 @@ import { useBackendMutation } from "main/utils/useBackend";
 // import SectionsTable from "main/components/SectionSearch/SectionSearchTable";
 
 export default function SectionSearchIndexPage() {
+  // Stryker disable next-line all
   const [_sectionJSON, setSectionJSON] = useState([]);
   const objectToAxiosParams = (query) => ({
     url: "/api/sections/basicsearch",
