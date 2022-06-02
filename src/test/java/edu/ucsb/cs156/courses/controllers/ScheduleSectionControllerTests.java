@@ -137,4 +137,35 @@ public class ScheduleSectionControllerTests extends ControllerTestCase {
     }
 
 
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void sections_user_return_OK() throws Exception {
+        User u1 = User.builder().id(1L).build();
+        CurrentUser curUser = CurrentUser.builder().user(u1).build();
+        when(currentUserService.getCurrentUser()).thenReturn(curUser);
+
+
+        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1L).build();
+        when(personalscheduleRepository.findByIdAndUser(1L, u1)).thenReturn(Optional.of(personalSchedule));
+
+        AddedCourse ac1 = AddedCourse.builder().enrollCd("123").personalSchedule(personalSchedule).id(1).build();
+        List<AddedCourse> listac1 = new ArrayList<AddedCourse>();
+        listac1.add(ac1);
+        when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
+ 
+        when(ucsbcirService.getSectionJSON("2022W","123")).thenReturn("Section Test");
+
+        MvcResult response = mockMvc.perform(get("/api/schedulesection?id=1"))
+                                .andExpect(status().isOk()).andReturn();
+        
+        verify(personalscheduleRepository, times(1)).findByIdAndUser(1L, u1);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String responseString = response.getResponse().getContentAsString();
+        List<String> resultList =  mapper.readValue(responseString, List.class);
+        System.out.println("JSON" + resultList);
+        assertEquals("Section Test", resultList.get(0));
+
+    }
+
 }
