@@ -91,4 +91,5 @@ describe("SectionSearchIndexPage tests", () => {
       subjectArea: "ANTH",
       courseLevel: "G",
     });
+  });
 });
