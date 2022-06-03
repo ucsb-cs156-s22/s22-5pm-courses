@@ -149,4 +149,22 @@ describe("AppNavbar tests", () => {
         expect(await screen.findByTestId("appnavbar-personalschedules-list")).toBeInTheDocument();
         expect(screen.getByTestId(/appnavbar-personalschedules-create/)).toBeInTheDocument();
     });
+
+    test("renders SectionSearch correctly", async () => {
+        const currentUser = currentUserFixtures.adminUser;
+        const systemInfo = systemInfoFixtures.showingBoth;
+
+        const doLogin = jest.fn();
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AppNavbar currentUser={currentUser} systemInfo={systemInfo} doLogin={doLogin} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText("SectionSearch")).toBeInTheDocument();      
+    });
+
 });
