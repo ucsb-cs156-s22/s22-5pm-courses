@@ -1,12 +1,15 @@
 import React from "react";
 import OurTable from "main/components/OurTable";
 
+import { yyyyqToQyy } from "main/utils/quarterUtilities";
+
 export default function SectionsTable({ sections }) {
 
     const columns = [
         {
             Header: 'Quarter',
-            accessor: 'courseInfo.quarter',
+            accessor: (row, _rowIndex) => yyyyqToQyy(row.courseInfo.quarter),
+            id: 'quarter',
         },
         {
             Header: 'Course Number',
