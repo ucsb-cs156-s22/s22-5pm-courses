@@ -14,7 +14,10 @@ import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSc
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
 import PersonalSchedulesDetailPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailPage";
 
+
 import SectionsIndexPage from "main/pages/Sections/SectionsIndexPage";
+
+import SectionSearchIndexPage from "main/pages/SectionSearch/SectionSearchIndexPage";
 
 
 
@@ -45,6 +48,13 @@ function App() {
               <Route exact path="/personalschedules/detail/:id" element={<PersonalSchedulesDetailPage />} />
                 
               <Route exact path="/sections/list" element={<SectionsIndexPage />} />
+            </>
+          )
+        }
+        {
+          hasRole(currentUser, "ROLE_USER") && (
+            <>
+              <Route exact path="/sectionsearch" element={<SectionSearchIndexPage />} />
             </>
           )
         }
