@@ -94,18 +94,23 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
     @Test
     public void api_addedcourses_post__user_logged_in() throws Exception {
         // arrange
+        String quarter = "20224";
+        Long psId = 123L;
+        String enrollCode = "00018";
 
         User thisUser = currentUserService.getCurrentUser().getUser();
 
-        PersonalSchedule personalSchedule = PersonalSchedule.builder().user(thisUser).name("Test schedule").description("A test personal schedule").quarter("20224").id(123L).build();
+        PersonalSchedule personalSchedule = PersonalSchedule.builder().user(thisUser).name("Test schedule").description("A test personal schedule").quarter(quarter).id(psId).build();
         when(personalScheduleRepository.findByIdAndUser(eq(123L), eq(thisUser))).thenReturn(Optional.of(personalSchedule));
 
-        AddedCourse expectedCourses = AddedCourse.builder().enrollCd("00018").personalSchedule(personalSchedule).id(0L).build();
+        AddedCourse expectedCourses = AddedCourse.builder().enrollCd(enrollCode).personalSchedule(personalSchedule).id(0L).build();
         when(addedCourseRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
+
+        when(ucsbCurriculumService.getSectionJSON(quarter, enrollCode)).thenReturn("{}");
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/addedcourses/post?enrollCd=00018&psId=123")
+                post("/api/addedcourses/post?enrollCd={enrollCode}&psId={psId}".replace("{enrollCode}", enrollCode).replace("{psId}", String.valueOf(psId)))
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
