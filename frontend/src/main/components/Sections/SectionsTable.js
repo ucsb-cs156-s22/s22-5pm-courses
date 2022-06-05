@@ -2,7 +2,7 @@ import React from "react";
 import OurTable from "main/components/OurTable";
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
-import { boldIfNotSection } from "main/utils/sectionUtils";
+import { boldIfNotSection, fraction_w_percent } from "main/utils/sectionUtils";
 
 export default function SectionsTable({ sections }) {
 
@@ -39,12 +39,13 @@ export default function SectionsTable({ sections }) {
         },
         {
             Header: 'Enrolled',
-            accessor: 'section.enrolledTotal',
+            accessor: (row, _rowIndex) => fraction_w_percent(row.section.enrolledTotal, row.section.maxEnroll),
+            id: 'enrolled'
         },
         {
-            Header: 'Max. Enrollment',
-            accessor: 'section.maxEnroll',
-        },
+            Header: "Enroll Code",
+            accessor: 'section.enrollCode'
+        }
     ];
 
     return <OurTable
