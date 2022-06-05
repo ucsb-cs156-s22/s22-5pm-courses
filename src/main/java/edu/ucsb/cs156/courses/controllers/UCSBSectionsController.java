@@ -1,7 +1,5 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,17 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping("/api/public")
-public class UCSBCurriculumController {
-    private final Logger logger = LoggerFactory.getLogger(UCSBCurriculumController.class);
-
+@RequestMapping("/api/sections")
+public class UCSBSectionsController {
+    private final Logger logger = LoggerFactory.getLogger(UCSBSectionsController.class);
     private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
@@ -36,13 +30,12 @@ public class UCSBCurriculumController {
     UCSBCurriculumService ucsbCurriculumService;
 
     @GetMapping(value = "/basicsearch", produces = "application/json")
-    public ResponseEntity<String> basicsearch(@RequestParam String qtr, @RequestParam String dept,
-            @RequestParam String level) throws JsonProcessingException {
-
-        String body = ucsbCurriculumService.getJSON(dept, qtr, level);
-        
-        return ResponseEntity.ok().body(body);
-    }      
-
+    public ResponseEntity<String> basicSearch(
+        @RequestParam String quarter, 
+        @RequestParam String courseLevel,
+        @RequestParam String subjectArea) throws JsonProcessingException {
+            
+        String sections = ucsbCurriculumService.getConvertedSectionsJSON(subjectArea, quarter, courseLevel);
+        return ResponseEntity.ok().body(sections);
+    }
 }
-
