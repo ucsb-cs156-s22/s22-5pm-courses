@@ -106,7 +106,7 @@ describe("UserTable tests", () => {
 
         const expectedHeaders = ["Quarter", "Course Number", "Course Title", "Days", "Begin Time", "End Time", 
         "Enrolled", "Max. Enrollment"];
-        const expectedFields = ["quarter", "courseInfo.courseId", "courseInfo.title", "section.timeLocations[0].days",                        
+        const expectedFields = ["quarter", "courseInfo.courseId", "courseInfo.title", "section.timeLocations[0].days",
         "section.timeLocations[0].beginTime", "section.timeLocations[0].endTime", "section.enrolledTotal", "section.maxEnroll"];
         const testId = "SectionsTable";
 
