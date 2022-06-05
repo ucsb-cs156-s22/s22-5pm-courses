@@ -11,6 +11,8 @@ import edu.ucsb.cs156.courses.repositories.AddedCourseRepository;
 
 import edu.ucsb.cs156.courses.entities.AddedCourse;
 
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -101,7 +103,7 @@ public class AddedCoursesController extends ApiController {
     @ApiOperation(value = "Get sections from a single schedule")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
-    public ResponseEntity<List<String>> thisScheduleSections(
+    public ResponseEntity<List<ConvertedSection>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id
     ) {
         PersonalSchedule personalSchedule = personalScheduleRepository.findById(id)
@@ -109,13 +111,13 @@ public class AddedCoursesController extends ApiController {
 
         var quarter = personalSchedule.getQuarter();
         Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
-        List<String> listOfJSON = new ArrayList<>();
+        List<ConvertedSection> listOfJSON = new ArrayList<>();
 
         for(AddedCourse currentClass : classesAdded)
         {
             String enrollCode = currentClass.getEnrollCd();
-            String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
-            listOfJSON.add(currentSection);
+            ConvertedSection currentSectionString = ucsbCurriculumService.getConvertedSection(quarter, enrollCode);
+            listOfJSON.add(currentSectionString);
         }
 
         return ResponseEntity.ok().body(listOfJSON);
@@ -125,7 +127,7 @@ public class AddedCoursesController extends ApiController {
     @ApiOperation(value = "Get sections from a single schedule (if it belongs to current user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
-    public ResponseEntity<List<String>> thisUserSections(
+    public ResponseEntity<List<ConvertedSection>> thisUserSections(
             @ApiParam("id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
         PersonalSchedule personalSchedule = personalScheduleRepository.findByIdAndUser(id, currentUser)
@@ -133,12 +135,12 @@ public class AddedCoursesController extends ApiController {
 
         var quarter = personalSchedule.getQuarter();
         Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
-        List<String> listOfJSON = new ArrayList<>();
+        List<ConvertedSection> listOfJSON = new ArrayList<>();
         for(AddedCourse currentClass : classesAdded)
         {
             String enrollCode = currentClass.getEnrollCd();
-            String currentSection = ucsbCurriculumService.getSectionJSON(quarter, enrollCode);
-            listOfJSON.add(currentSection);
+            ConvertedSection currentSectionString = ucsbCurriculumService.getConvertedSection(quarter, enrollCode);
+            listOfJSON.add(currentSectionString);
         }
 
         return ResponseEntity.ok().body(listOfJSON);

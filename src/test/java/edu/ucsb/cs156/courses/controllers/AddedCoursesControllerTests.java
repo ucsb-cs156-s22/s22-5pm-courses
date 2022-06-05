@@ -10,6 +10,10 @@ import edu.ucsb.cs156.courses.entities.AddedCourse;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.User;
 
+import edu.ucsb.cs156.courses.documents.CourseInfo;
+import edu.ucsb.cs156.courses.documents.Section;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+
 import edu.ucsb.cs156.courses.repositories.AddedCourseRepository;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
@@ -226,23 +230,46 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
         User u1 = User.builder().id(1L).build();
 
-        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1L).build();
+        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("20221").user(u1).id(1L).build();
         when(personalScheduleRepository.findById(1L)).thenReturn(Optional.of(personalSchedule));
 
         AddedCourse ac1 = AddedCourse.builder().enrollCd("123").personalSchedule(personalSchedule).id(1).build();
         List<AddedCourse> listac1 = new ArrayList<AddedCourse>();
         listac1.add(ac1);
         when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
-        when(ucsbCurriculumService.getSectionJSON("2022W","123")).thenReturn("Section Test");
+
+        CourseInfo courseInfo = CourseInfo.builder()
+            .quarter("20221")
+            .courseId("ANTH      3  ")
+            .title("INTRO ARCH")
+            .description("An introduction to archaeology")
+            .build();
+        Section section = Section.builder()
+            .enrollCode("123")
+            .section("0100")
+            .session("1")
+            .classClosed("true")
+            .courseCancelled("false")
+            .gradingOptionCode("L")
+            .enrolledTotal(99)
+            .maxEnroll(100)
+            .build();
+        ConvertedSection convertedSection = ConvertedSection.builder()
+            .courseInfo(courseInfo)
+            .section(section)
+            .build();
+
+        String convertedSectionString = mapper.writeValueAsString(Arrays.asList(convertedSection));
+
+        when(ucsbCurriculumService.getConvertedSection("20221","123")).thenReturn(convertedSection);
 
         MvcResult response = mockMvc.perform(get("/api/addedcourses/admin?id=1"))
                                 .andExpect(status().isOk()).andReturn();
 
         verify(personalScheduleRepository, times(1)).findById(eq(1L));
         String responseString = response.getResponse().getContentAsString();
-        List<String> resultList =  mapper.readValue(responseString, List.class);
-        System.out.println("JSON" + resultList);
-        assertEquals("Section Test", resultList.get(0));
+        System.out.println("JSON" + responseString);
+        assertEquals(convertedSectionString, responseString);
     }
 
 
@@ -254,7 +281,7 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         when(currentUserService.getCurrentUser()).thenReturn(curUser);
 
 
-        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1L).build();
+        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("20221").user(u1).id(1L).build();
         when(personalScheduleRepository.findByIdAndUser(1L, u1)).thenReturn(Optional.of(personalSchedule));
 
         AddedCourse ac1 = AddedCourse.builder().enrollCd("123").personalSchedule(personalSchedule).id(1).build();
@@ -262,7 +289,30 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         listac1.add(ac1);
         when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
 
-        when(ucsbCurriculumService.getSectionJSON("2022W","123")).thenReturn("Section Test");
+        CourseInfo courseInfo = CourseInfo.builder()
+            .quarter("20221")
+            .courseId("ANTH      3  ")
+            .title("INTRO ARCH")
+            .description("An introduction to archaeology")
+            .build();
+        Section section = Section.builder()
+            .enrollCode("123")
+            .section("0100")
+            .session("1")
+            .classClosed("true")
+            .courseCancelled("false")
+            .gradingOptionCode("L")
+            .enrolledTotal(99)
+            .maxEnroll(100)
+            .build();
+        ConvertedSection convertedSection = ConvertedSection.builder()
+            .courseInfo(courseInfo)
+            .section(section)
+            .build();
+
+        when(ucsbCurriculumService.getConvertedSection("20221","123")).thenReturn(convertedSection);
+
+        String convertedSectionString = mapper.writeValueAsString(Arrays.asList(convertedSection));
 
         MvcResult response = mockMvc.perform(get("/api/addedcourses?id=1"))
                                 .andExpect(status().isOk()).andReturn();
@@ -271,9 +321,8 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
         ObjectMapper mapper = new ObjectMapper();
         String responseString = response.getResponse().getContentAsString();
-        List<String> resultList =  mapper.readValue(responseString, List.class);
-        System.out.println("JSON" + resultList);
-        assertEquals("Section Test", resultList.get(0));
+        System.out.println("JSON" + responseString);
+        assertEquals(convertedSectionString, responseString);
 
     }
 }
