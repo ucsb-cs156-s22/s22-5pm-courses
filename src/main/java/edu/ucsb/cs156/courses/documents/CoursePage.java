@@ -23,7 +23,7 @@ public class CoursePage {
 
     /**
      * Create a CoursePage object from json representation
-     * 
+     *
      * @param json String of json returned by API endpoint {@code /classes/search}
      * @return a new CoursePage object
      * @see <a href=
@@ -44,7 +44,7 @@ public class CoursePage {
 
     /**
      * Create a List<ConvertedSection> from json representation
-     * 
+     *
      * @param json String of json returned by API endpoint {@code /classes/search}
      * @return a new CoursePage object
      * @see <a href=
@@ -55,22 +55,9 @@ public class CoursePage {
         List<ConvertedSection> result = new ArrayList<ConvertedSection>();
 
         for (Course c : this.getClasses()) {
-            for (Section section : c.getClassSections()) {
-                CourseInfo courseInfo = CourseInfo.builder()
-                        .quarter(c.getQuarter())
-                        .courseId(c.getCourseId())
-                        .title(c.getTitle())
-                        .description(c.getDescription())
-                        .build();
-                ConvertedSection cs = ConvertedSection.builder()
-                        .courseInfo(courseInfo)
-                        .section(section)
-                        .build();
-                result.add(cs);
-
-            }
+            result.addAll(c.convertedSections());
         }
         return result;
     }
 
-} 
+}
