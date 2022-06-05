@@ -33,4 +33,3 @@ ThreeSectionsUser.args = {
     sections: sectionsFixtures.threeSections,
     currentUser: currentUserFixtures.adminUser
 };
-

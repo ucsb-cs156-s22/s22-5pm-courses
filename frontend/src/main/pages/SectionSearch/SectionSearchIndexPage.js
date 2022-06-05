@@ -1,10 +1,8 @@
 import { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import SectionSearchForm from "main/components/SectionSearch/SectionSearchForm";
+import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourseSearchForm";
 import { useBackendMutation } from "main/utils/useBackend";
-import SectionsTable from 'main/components/Sections/SectionsTable';
-
-
+import SectionsTable from "main/components/Sections/SectionsTable";
 
 export default function SectionSearchIndexPage() {
   // Stryker disable all
@@ -28,6 +26,7 @@ export default function SectionSearchIndexPage() {
     { onSuccess },
     []
   );
+
     // Stryker enable all
   async function fetchBasicCourseJSON(_event, query) {
     mutation.mutate(query);
@@ -36,7 +35,7 @@ export default function SectionSearchIndexPage() {
     <BasicLayout>
       <div className="pt-2">
         <h5>Section Search</h5>
-        <SectionSearchForm fetchJSON={fetchBasicCourseJSON} />
+        <BasicCourseSearchForm fetchJSON={fetchBasicCourseJSON} />
         <SectionsTable sections={sectionJSON} />
       </div>
     </BasicLayout>
