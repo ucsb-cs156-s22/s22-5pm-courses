@@ -12,6 +12,10 @@ export default function SectionsTable({ sections }) {
             id: 'quarter',
         },
         {
+            Header: 'Section',
+            accessor: 'section.section',
+        },
+        {
             Header: 'Course Number',
             accessor: 'courseInfo.courseId',
         },
