@@ -50,14 +50,14 @@ import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 public class AddedCoursesController extends ApiController {
 
     @Autowired
-    PersonalScheduleRepository personalscheduleRepository;
+    PersonalScheduleRepository personalScheduleRepository;
 
     @Autowired
     AddedCourseRepository addedCourseRepository;
 
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
-  
+
     @ApiOperation(value = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
@@ -104,8 +104,7 @@ public class AddedCoursesController extends ApiController {
     public ResponseEntity<List<String>> thisScheduleSections(
             @ApiParam("id") @RequestParam Long id
     ) {
-        System.out.println("Hello, testing admin");
-        PersonalSchedule personalSchedule = personalscheduleRepository.findById(id)
+        PersonalSchedule personalSchedule = personalScheduleRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
 
         var quarter = personalSchedule.getQuarter();
@@ -129,7 +128,7 @@ public class AddedCoursesController extends ApiController {
     public ResponseEntity<List<String>> thisUserSections(
             @ApiParam("id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
-        PersonalSchedule personalSchedule = personalscheduleRepository.findByIdAndUser(id, currentUser)
+        PersonalSchedule personalSchedule = personalScheduleRepository.findByIdAndUser(id, currentUser)
           .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
 
         var quarter = personalSchedule.getQuarter();

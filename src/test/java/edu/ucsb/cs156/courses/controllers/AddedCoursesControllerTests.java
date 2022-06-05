@@ -55,7 +55,7 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
 
     @MockBean
-    PersonalScheduleRepository personalscheduleRepository;
+    PersonalScheduleRepository personalScheduleRepository;
 
     @MockBean
     UserRepository userRepository;
@@ -63,7 +63,7 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
     @MockBean
     AddedCourseRepository addedCourseRepository;
-  
+
     @MockBean
     private UCSBCurriculumService ucsbCurriculumService;
 
@@ -73,12 +73,6 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
     @Autowired
     public ObjectMapper mapper;
 
-    @Test
-    public void sections_admin_all__logged_out__returns_403() throws Exception {
-        mockMvc.perform(get("/api/addedcourses/admin?id=1")).andExpect(status().is(403));
-    }
-    
-
     // Authorization tests for /api/addedcourses/post
     @Test
     public void api_addedcourses_post__logged_out__returns_403() throws Exception {
@@ -87,14 +81,11 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void sections_admin_all__user_logged_in__returns_403() throws Exception {
-        mockMvc.perform(get("/api/addedcourses/admin?id=1"))
-                .andExpect(status().is(403));
-    }
-
-    @WithMockUser(roles = { "USER" })
-    @Test
     public void api_addedcourses_post__wrong_enrollcode_length__returns_400() throws Exception {
+        User u1 = User.builder().id(1L).build();
+        CurrentUser curUser = CurrentUser.builder().user(u1).build();
+        when(currentUserService.getCurrentUser()).thenReturn(curUser);
+
         mockMvc.perform(post("/api/addedcourses/post?enrollCd=wrong code length&psId=123")
                 .with(csrf()))
             .andExpect(status().is(400));
@@ -102,96 +93,11 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void sections__user_logged_in__returns_404() throws Exception {
-        mockMvc.perform(get("/api/addedcourses2?id=1"))
-                .andExpect(status().is(404));
-    }
-
-
-    @WithMockUser(roles = { "ADMIN" })
-    @Test
-    public void sections_admin_logged_in__returns_404() throws Exception {
-        mockMvc.perform(get("/api/addedcourses/admin?id=1"))
-                .andExpect(status().is(404));
-    }
-
-
-
-    @WithMockUser(roles = { "ADMIN" })
-    @Test
-    public void sections_admin_all_id_does_not_exist() throws Exception {
-
-        when(addedCourseRepository.findById(eq(7L))).thenReturn(Optional.empty());
-
-        MvcResult response = mockMvc.perform(get("/api/addedcourses/admin?id=7"))
-                                .andExpect(status().is(404)).andReturn();
-
-        verify(personalscheduleRepository, times(1)).findById(eq(7L));
-        Map<String, Object> json = responseToJson(response);
-        assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
-    }
-
-    @WithMockUser(roles = { "ADMIN" })
-    @Test
-    public void sections_admin_return_OK() throws Exception {
-
-        User u1 = User.builder().id(1L).build();
-
-        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1L).build();
-        when(personalscheduleRepository.findById(1L)).thenReturn(Optional.of(personalSchedule));
-
-        AddedCourse ac1 = AddedCourse.builder().enrollCd("123").personalSchedule(personalSchedule).id(1).build();
-        List<AddedCourse> listac1 = new ArrayList<AddedCourse>();
-        listac1.add(ac1);
-        when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
-        when(ucsbcirService.getSectionJSON("2022W","123")).thenReturn("Section Test");
-
-        MvcResult response = mockMvc.perform(get("/api/addedcourses/admin?id=1"))
-                                .andExpect(status().isOk()).andReturn();
-
-        verify(personalscheduleRepository, times(1)).findById(eq(1L));
-        String responseString = response.getResponse().getContentAsString();
-        List<String> resultList =  mapper.readValue(responseString, List.class);
-        System.out.println("JSON" + resultList);
-        assertEquals("Section Test", resultList.get(0));
-    }
-
-
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void sections_user_return_OK() throws Exception {
+    public void api_addedcourses_post__invalid_psid__returns_400() throws Exception {
         User u1 = User.builder().id(1L).build();
         CurrentUser curUser = CurrentUser.builder().user(u1).build();
         when(currentUserService.getCurrentUser()).thenReturn(curUser);
 
-
-        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1L).build();
-        when(personalscheduleRepository.findByIdAndUser(1L, u1)).thenReturn(Optional.of(personalSchedule));
-
-        AddedCourse ac1 = AddedCourse.builder().enrollCd("123").personalSchedule(personalSchedule).id(1).build();
-        List<AddedCourse> listac1 = new ArrayList<AddedCourse>();
-        listac1.add(ac1);
-        when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
-
-        when(ucsbcirService.getSectionJSON("2022W","123")).thenReturn("Section Test");
-
-        MvcResult response = mockMvc.perform(get("/api/addedcourses?id=1"))
-                                .andExpect(status().isOk()).andReturn();
-
-        verify(personalscheduleRepository, times(1)).findByIdAndUser(1L, u1);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String responseString = response.getResponse().getContentAsString();
-        List<String> resultList =  mapper.readValue(responseString, List.class);
-        System.out.println("JSON" + resultList);
-        assertEquals("Section Test", resultList.get(0));
-
-    }
-
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_addedcourses_post__invalid_psid__returns_400() throws Exception {
         mockMvc.perform(post("/api/addedcourses/post?enrollCd=11111&psId=123")
                 .with(csrf()))
             .andExpect(status().is(400));
@@ -204,7 +110,9 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         Long psId = 123L;
         String enrollCode = "99999";
 
-        User thisUser = currentUserService.getCurrentUser().getUser();
+        User thisUser = User.builder().id(1L).build();
+        CurrentUser curUser = CurrentUser.builder().user(thisUser).build();
+        when(currentUserService.getCurrentUser()).thenReturn(curUser);
 
         PersonalSchedule personalSchedule = PersonalSchedule.builder().user(thisUser).name("Test schedule").description("A test personal schedule").quarter(quarter).id(psId).build();
         when(personalScheduleRepository.findByIdAndUser(eq(123L), eq(thisUser))).thenReturn(Optional.of(personalSchedule));
@@ -224,7 +132,9 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         Long psId = 123L;
         String enrollCode = "00018";
 
-        User thisUser = currentUserService.getCurrentUser().getUser();
+        User thisUser = User.builder().id(1L).build();
+        CurrentUser curUser = CurrentUser.builder().user(thisUser).build();
+        when(currentUserService.getCurrentUser()).thenReturn(curUser);
 
         PersonalSchedule personalSchedule = PersonalSchedule.builder().user(thisUser).name("Test schedule").description("A test personal schedule").quarter(quarter).id(psId).build();
         when(personalScheduleRepository.findByIdAndUser(eq(123L), eq(thisUser))).thenReturn(Optional.of(personalSchedule));
@@ -245,5 +155,125 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         String expectedJson = mapper.writeValueAsString(expectedCourses);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
+    }
+
+    // Authorization tests for /api/addedcourses/
+
+    @Test
+    public void sections_admin_all__logged_out__returns_403() throws Exception {
+        mockMvc.perform(get("/api/addedcourses/admin?id=1")).andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void sections_admin_all__user_logged_in__returns_403() throws Exception {
+        mockMvc.perform(get("/api/addedcourses/admin?id=1"))
+                .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void sections__user_logged_in__returns_404() throws Exception {
+        mockMvc.perform(get("/api/addedcourses2?id=1"))
+                .andExpect(status().is(404));
+    }
+
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void sections_admin_logged_in__returns_404() throws Exception {
+        mockMvc.perform(get("/api/addedcourses/admin?id=1"))
+                .andExpect(status().is(404));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void sections_user_all_id_does_not_exist() throws Exception {
+
+        User thisUser = User.builder().id(1L).build();
+        CurrentUser curUser = CurrentUser.builder().user(thisUser).build();
+        when(currentUserService.getCurrentUser()).thenReturn(curUser);
+
+        when(personalScheduleRepository.findByIdAndUser(7L, thisUser)).thenReturn(Optional.empty());
+
+        MvcResult response = mockMvc.perform(get("/api/addedcourses?id=7"))
+                                .andExpect(status().is(404)).andReturn();
+
+        verify(personalScheduleRepository, times(1)).findByIdAndUser(7L, thisUser);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void sections_admin_all_id_does_not_exist() throws Exception {
+
+        when(personalScheduleRepository.findById(eq(7L))).thenReturn(Optional.empty());
+
+        MvcResult response = mockMvc.perform(get("/api/addedcourses/admin?id=7"))
+                                .andExpect(status().is(404)).andReturn();
+
+        verify(personalScheduleRepository, times(1)).findById(eq(7L));
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void sections_admin_return_OK() throws Exception {
+
+        User u1 = User.builder().id(1L).build();
+
+        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1L).build();
+        when(personalScheduleRepository.findById(1L)).thenReturn(Optional.of(personalSchedule));
+
+        AddedCourse ac1 = AddedCourse.builder().enrollCd("123").personalSchedule(personalSchedule).id(1).build();
+        List<AddedCourse> listac1 = new ArrayList<AddedCourse>();
+        listac1.add(ac1);
+        when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
+        when(ucsbCurriculumService.getSectionJSON("2022W","123")).thenReturn("Section Test");
+
+        MvcResult response = mockMvc.perform(get("/api/addedcourses/admin?id=1"))
+                                .andExpect(status().isOk()).andReturn();
+
+        verify(personalScheduleRepository, times(1)).findById(eq(1L));
+        String responseString = response.getResponse().getContentAsString();
+        List<String> resultList =  mapper.readValue(responseString, List.class);
+        System.out.println("JSON" + resultList);
+        assertEquals("Section Test", resultList.get(0));
+    }
+
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void sections_user_return_OK() throws Exception {
+        User u1 = User.builder().id(1L).build();
+        CurrentUser curUser = CurrentUser.builder().user(u1).build();
+        when(currentUserService.getCurrentUser()).thenReturn(curUser);
+
+
+        PersonalSchedule personalSchedule = PersonalSchedule.builder().name("Ryan").description("Test").quarter("2022W").user(u1).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(1L, u1)).thenReturn(Optional.of(personalSchedule));
+
+        AddedCourse ac1 = AddedCourse.builder().enrollCd("123").personalSchedule(personalSchedule).id(1).build();
+        List<AddedCourse> listac1 = new ArrayList<AddedCourse>();
+        listac1.add(ac1);
+        when(addedCourseRepository.findAllByPersonalSchedule(personalSchedule)).thenReturn(listac1);
+
+        when(ucsbCurriculumService.getSectionJSON("2022W","123")).thenReturn("Section Test");
+
+        MvcResult response = mockMvc.perform(get("/api/addedcourses?id=1"))
+                                .andExpect(status().isOk()).andReturn();
+
+        verify(personalScheduleRepository, times(1)).findByIdAndUser(1L, u1);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String responseString = response.getResponse().getContentAsString();
+        List<String> resultList =  mapper.readValue(responseString, List.class);
+        System.out.println("JSON" + resultList);
+        assertEquals("Section Test", resultList.get(0));
+
     }
 }
