@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -55,6 +57,46 @@ public class AddedCoursesController extends ApiController {
 
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
+  
+    @ApiOperation(value = "Create a new course")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/post")
+    public AddedCourse postCourse(
+            @ApiParam("enrollCd") @RequestParam String enrollCd,
+            @ApiParam("psId") @RequestParam Long psId) {
+
+        CurrentUser currentUser = getCurrentUser();
+        log.info("currentUser={} psId={}", currentUser, psId);
+        Optional<PersonalSchedule> personalSchedule = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser());
+
+
+        if (String.valueOf(enrollCd).length() > 5){
+            //Reject POST request if enrollCd is more than five digits
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "enrollCd should be no more than five digits");
+        }
+
+        if (!personalSchedule.isPresent())
+        {
+            //Reject POST request if the psId is not the psId of an existing Personal Schedule
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PersonalSchedule doesn't exist!");
+        }
+        else
+        {
+            // Reject POST request if the quarter doesn't match the one on the psId
+            PersonalSchedule currentSchedule = personalSchedule.get();
+            String retVal = ucsbCurriculumService.getSectionJSON(currentSchedule.getQuarter(), enrollCd);
+            if  (retVal.equals("{\"error\": \"Section not found\"}")){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The enrollCd does not exist in the given quarter");
+            }
+        }
+
+
+        AddedCourse addedCourse = new AddedCourse();
+        addedCourse.setEnrollCd(enrollCd);
+        addedCourse.setPersonalSchedule(personalSchedule.get());
+        AddedCourse savedAddedCourse = addedCourseRepository.save(addedCourse);
+        return savedAddedCourse;
+    }
 
     @ApiOperation(value = "Get sections from a single schedule")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
