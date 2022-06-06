@@ -2,6 +2,7 @@ import React from "react";
 import OurTable from "main/components/OurTable";
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
+import { boldIfNotSection } from "main/utils/sectionUtils";
 
 export default function SectionsTable({ sections }) {
 
@@ -10,6 +11,11 @@ export default function SectionsTable({ sections }) {
             Header: 'Quarter',
             accessor: (row, _rowIndex) => yyyyqToQyy(row.courseInfo.quarter),
             id: 'quarter',
+        },
+        {
+            Header: 'Section',
+            accessor: (row, _rowIndex) => boldIfNotSection(row.section.section),
+            id: 'section.section',
         },
         {
             Header: 'Course Number',
