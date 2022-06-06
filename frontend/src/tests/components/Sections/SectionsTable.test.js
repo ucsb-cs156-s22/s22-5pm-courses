@@ -71,8 +71,9 @@ describe("UserTable tests", () => {
             </QueryClientProvider>
         );
 
-        const expectedHeaders = ["Quarter", "Course Number", "Course Title", "Days", "Begin Time", "End Time", "Enrolled", "Max. Enrollment"];
-        const expectedFields = ["quarter", "courseInfo.courseId", "courseInfo.title", "section.timeLocations[0].days", 
+        const expectedHeaders = ["Quarter", "Section", "Course Number", "Course Title", "Days", "Begin Time", "End Time", 
+        "Enrolled", "Max. Enrollment"];
+        const expectedFields = ["quarter", "section.section", "courseInfo.courseId", "courseInfo.title", "section.timeLocations[0].days", 
         "section.timeLocations[0].beginTime", "section.timeLocations[0].endTime", "section.enrolledTotal", "section.maxEnroll"];
         const testId = "SectionsTable";
 
@@ -87,7 +88,8 @@ describe("UserTable tests", () => {
         });
 
         await waitFor( ()=> expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 8"));
-        expect(screen.getByTestId(`${testId}-cell-row-1-col-quarter`)).toHaveTextContent("F20");
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("F20");
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-section.section`)).toHaveTextContent("0101");
         expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 9");
 
     });
@@ -104,8 +106,9 @@ describe("UserTable tests", () => {
             </QueryClientProvider>
         );
 
-        const expectedHeaders = ["Quarter", "Course Number", "Course Title", "Days", "Begin Time", "End Time", "Enrolled", "Max. Enrollment"];
-        const expectedFields = ["quarter", "courseInfo.courseId", "courseInfo.title", "section.timeLocations[0].days",
+        const expectedHeaders = ["Quarter", "Section", "Course Number", "Course Title", "Days", "Begin Time", "End Time", 
+        "Enrolled", "Max. Enrollment"];
+        const expectedFields = ["quarter", "section.section", "courseInfo.courseId", "courseInfo.title", "section.timeLocations[0].days",                        
         "section.timeLocations[0].beginTime", "section.timeLocations[0].endTime", "section.enrolledTotal", "section.maxEnroll"];
         const testId = "SectionsTable";
 
@@ -120,7 +123,8 @@ describe("UserTable tests", () => {
         });
 
         await waitFor( () => expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 8"));
-        expect(screen.getByTestId(`${testId}-cell-row-1-col-quarter`)).toHaveTextContent("F20");
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("F20");
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-section.section`)).toHaveTextContent("0101");
         expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 9");
 
     });
