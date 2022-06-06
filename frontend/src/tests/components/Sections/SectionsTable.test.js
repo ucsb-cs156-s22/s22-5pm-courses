@@ -90,6 +90,7 @@ describe("UserTable tests", () => {
         await waitFor( ()=> expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 8"));
         expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("F20");
         expect(screen.getByTestId(`${testId}-cell-row-0-col-section.section`)).toHaveTextContent("0101");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 9");
 
     });
 
@@ -124,6 +125,7 @@ describe("UserTable tests", () => {
         await waitFor( () => expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 8"));
         expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("F20");
         expect(screen.getByTestId(`${testId}-cell-row-0-col-section.section`)).toHaveTextContent("0101");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("CMPSC 9");
 
     });
     
