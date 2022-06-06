@@ -223,4 +223,47 @@ describe("UserTable tests", () => {
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
   });
+  test("Details button navigates to the edit page for Ordinary user", async () => {
+
+    const currentUser = currentUserFixtures.userOnly;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    expect(await screen.findByTestId(`PersonalSchedulesTable-cell-row-0-col-id`)).toHaveTextContent("1");
+
+    const detailButton = screen.getByTestId(`PersonalSchedulesTable-cell-row-0-col-Details-button`);
+    expect(detailButton).toBeInTheDocument();
+    
+    fireEvent.click(detailButton);
+
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/personalschedules/detail/1'));
+  });
+
+  test("Details button navigates to the edit page for admin user", async () => {
+
+    const currentUser = currentUserFixtures.userOnly;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    expect(await screen.findByTestId(`PersonalSchedulesTable-cell-row-0-col-id`)).toHaveTextContent("1");
+
+    const detailButton = screen.getByTestId(`PersonalSchedulesTable-cell-row-0-col-Details-button`);
+    expect(detailButton).toBeInTheDocument();
+    
+    fireEvent.click(detailButton);
+
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/personalschedules/detail/1'));
+  });
 });
