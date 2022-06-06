@@ -26,7 +26,7 @@ export default function SectionSearchIndexPage() {
     { onSuccess },
     []
   );
-    //Stryker enable all
+    // Stryker enable all
   async function fetchBasicCourseJSON(_event, query) {
     mutation.mutate(query);
   }
