@@ -107,7 +107,7 @@ describe("UserTable tests", () => {
             </QueryClientProvider>
         );
 
-        const expectedHeaders = ["Quarter", "Section", "Course Number", "Course Title", "Days", "Begin Time", "End Time", 
+        const expectedHeaders = ["Quarter", "Section", "Course Number", "Course Title", "Days", "Begin Time", "End Time",
         "Enrolled", "Enroll Code"];
         const expectedFields = ["quarter", "section.section", "courseInfo.courseId", "courseInfo.title", "section.timeLocations[0].days",                        
         "section.timeLocations[0].beginTime", "section.timeLocations[0].endTime", "enrolled", "section.enrollCode"];
