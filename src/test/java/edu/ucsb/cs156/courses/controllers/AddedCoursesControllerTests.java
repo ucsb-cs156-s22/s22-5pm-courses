@@ -195,7 +195,32 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+    
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_addedcourses_user_logged_in_search_for_courses_to_a_schedule_that_does_not_belong_to_user() throws Exception {
 
+        // arrange
+
+         User thisUser = currentUserService.getCurrentUser().getUser();
+         User otherUser = User.builder().id(999L).build();
+
+         PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(otherUser).id(1L).build();
+
+         when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(otherUser))).thenReturn(Optional.of(p1));
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/addedcourses/all?psId=29"))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+
+        verify(addedCourseRepository, times(0)).findAllByPersonalSchedule(p1);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("PersonalSchedule with id 29 not found", json.get("message"));
+    }
+    
     // Authorization tests for /api/addedcourses/
 
     @Test
