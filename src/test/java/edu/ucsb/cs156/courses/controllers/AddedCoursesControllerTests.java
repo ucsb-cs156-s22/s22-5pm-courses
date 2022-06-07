@@ -88,7 +88,7 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
     public void api_addedcourses_all__logged_out__returns_403() throws Exception {
         mockMvc.perform(get("/api/addedcourses/all?psId=1"))
                 .andExpect(status().is(403));
-      
+    }
     @WithMockUser(roles = { "USER" })
     @Test
     public void api_addedcourses_post__wrong_enrollcode_length__returns_400() throws Exception {
