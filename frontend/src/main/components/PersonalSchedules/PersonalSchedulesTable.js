@@ -13,6 +13,9 @@ export default function PersonalSchedulesTable({ personalSchedules, currentUser 
         navigate(`/personalschedules/edit/${cell.row.values.id}`)
     }
 
+    const detailCallback = (cell) => {
+        navigate(`/personalschedules/detail/${cell.row.values.id}`)
+    }
     // Stryker disable all : hard to test for query caching
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
@@ -40,13 +43,17 @@ export default function PersonalSchedulesTable({ personalSchedules, currentUser 
         },
         {
             Header: 'Quarter',
-            accessor: (row, _rowIndex) => yyyyqToQyy(row.quarter),
+            accessor: (row, _rowIndex) => {
+                console.log("row=", row);
+                return yyyyqToQyy(row.quarter);
+            },
             id: 'quarter',
         },
     ];
 
     const columnsIfUser = [
         ...columns,
+        ButtonColumn("Details", "primary", detailCallback, "PersonalSchedulesTable"),
         ButtonColumn("Edit", "primary", editCallback, "PersonalSchedulesTable"),
         ButtonColumn("Delete", "danger", deleteCallback, "PersonalSchedulesTable")
     ]

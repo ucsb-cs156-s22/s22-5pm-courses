@@ -1,10 +1,14 @@
 package edu.ucsb.cs156.courses.services;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -18,11 +22,18 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpClientErrorException.*;
 import org.springframework.web.client.RestTemplate;
 
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CoursePage;
+import edu.ucsb.cs156.courses.documents.Course;
+
 /**
  * Service object that wraps the UCSB Academic Curriculum API
  */
 @Service
 public class UCSBCurriculumService  {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private Logger logger = LoggerFactory.getLogger(UCSBCurriculumService.class);
 
@@ -79,6 +90,17 @@ public class UCSBCurriculumService  {
         logger.info("json: {} contentType: {} statusCode: {}",retVal,contentType,statusCode);
         return retVal;
     }
+
+
+    public String getConvertedSectionsJSON(String subjectArea, String quarter, String courseLevel)
+            throws JsonProcessingException {
+        String json = getJSON(subjectArea, quarter, courseLevel);
+        CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);
+        List<ConvertedSection> sections = coursePage.convertedSections();
+        String convertedSection = objectMapper.writeValueAsString(sections);
+        return convertedSection;
+    }
+
 
     public String getSubjectsJSON() {
 
@@ -142,4 +164,18 @@ public class UCSBCurriculumService  {
         return retVal;
     }
 
+    public ConvertedSection getConvertedSection(String quarter, String enrollCode) {
+        String rawSectionJSON = getSectionJSON(quarter, enrollCode);
+
+        try {
+            Course courseObject = objectMapper.readValue(rawSectionJSON, Course.class);
+            logger.info("courseObject: {}", courseObject);
+            ConvertedSection convertedSectionObject = courseObject.convertedSections().get(0);
+
+            return convertedSectionObject;
+        } catch (JsonProcessingException jpe) {
+            logger.error("JsonProcessingException:" + jpe);
+            return null;
+        }
+    }
 }
