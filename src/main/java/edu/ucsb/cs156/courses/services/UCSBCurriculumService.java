@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
+import edu.ucsb.cs156.courses.documents.Course;
 
 /**
  * Service object that wraps the UCSB Academic Curriculum API
@@ -95,7 +96,7 @@ public class UCSBCurriculumService  {
             throws JsonProcessingException {
         String json = getJSON(subjectArea, quarter, courseLevel);
         CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);
-        List<ConvertedSection> sections = coursePage.convertedSections();  
+        List<ConvertedSection> sections = coursePage.convertedSections();
         String convertedSection = objectMapper.writeValueAsString(sections);
         return convertedSection;
     }
@@ -163,4 +164,18 @@ public class UCSBCurriculumService  {
         return retVal;
     }
 
+    public ConvertedSection getConvertedSection(String quarter, String enrollCode) {
+        String rawSectionJSON = getSectionJSON(quarter, enrollCode);
+
+        try {
+            Course courseObject = objectMapper.readValue(rawSectionJSON, Course.class);
+            logger.info("courseObject: {}", courseObject);
+            ConvertedSection convertedSectionObject = courseObject.convertedSections().get(0);
+
+            return convertedSectionObject;
+        } catch (JsonProcessingException jpe) {
+            logger.error("JsonProcessingException:" + jpe);
+            return null;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -30,6 +31,8 @@ import org.springframework.web.client.RestTemplate;
 
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
+import edu.ucsb.cs156.courses.documents.CourseInfo;
+import edu.ucsb.cs156.courses.documents.Section;
 
 @RestClientTest(UCSBCurriculumService.class)
 public class UCSBCurriculumServiceTests {
@@ -245,4 +248,66 @@ public class UCSBCurriculumServiceTests {
         assertEquals(expected, convertedSections);
     }
 
+    @Test
+    public void test_getSection_with_ConvertedSections_success() throws Exception {
+
+        CourseInfo courseInfo = CourseInfo.builder()
+            .quarter("20221")
+            .courseId("ANTH      3  ")
+            .title("INTRO ARCH")
+            .description("An introduction to archaeology")
+            .build();
+        Section section = Section.builder()
+            .enrollCode("00018")
+            .section("0100")
+            .session("1")
+            .classClosed("true")
+            .courseCancelled("false")
+            .gradingOptionCode("L")
+            .enrolledTotal(99)
+            .maxEnroll(100)
+            .build();
+        ConvertedSection convertedSection = ConvertedSection.builder()
+            .courseInfo(courseInfo)
+            .section(section)
+            .build();
+
+        String jsonAPIResponse = "{ \"quarter\": \"20221\", \"courseId\": \"ANTH      3  \", \"title\": \"INTRO ARCH\", \"description\": \"An introduction to archaeology\", \"classSections\": [{ \"enrollCode\": \"00018\", \"section\": \"0100\", \"session\": \"1\", \"classClosed\": \"true\", \"courseCancelled\": \"false\", \"gradingOptionCode\": \"L\", \"enrolledTotal\": 99, \"maxEnroll\": 100 }] }";
+
+        String quarter = "20221";
+        String enrollCode = "00018";
+
+        String expectedURL = UCSBCurriculumService.SECTION_ENDPOINT.replace("{quarter}", quarter).replace("{enrollCode}", enrollCode);
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+            .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("ucsb-api-version", "1.0"))
+            .andExpect(header("ucsb-api-key", apiKey))
+            .andRespond(withSuccess(jsonAPIResponse, MediaType.APPLICATION_JSON));
+
+        ConvertedSection result = ucs.getConvertedSection(quarter, enrollCode);
+        assertEquals(convertedSection, result);
+    }
+
+    @Test
+    public void test_getSection_with_ConvertedSections_json_exception() throws Exception {
+
+        String jsonAPIResponse = "bad format";
+
+        String quarter = "20221";
+        String enrollCode = "00018";
+
+        String expectedURL = UCSBCurriculumService.SECTION_ENDPOINT.replace("{quarter}", quarter).replace("{enrollCode}", enrollCode);
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+            .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("ucsb-api-version", "1.0"))
+            .andExpect(header("ucsb-api-key", apiKey))
+            .andRespond(withSuccess(jsonAPIResponse, MediaType.APPLICATION_JSON));
+
+        ConvertedSection result = ucs.getConvertedSection(quarter, enrollCode);
+        assertNull(result);
+    }
 }

@@ -1,19 +1,27 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import edu.ucsb.cs156.courses.entities.AddedCourse;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
+import edu.ucsb.cs156.courses.entities.AddedCourse;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
-import edu.ucsb.cs156.courses.repositories.AddedCourseRepository;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
-import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+
+import edu.ucsb.cs156.courses.repositories.AddedCourseRepository;
+
+import edu.ucsb.cs156.courses.entities.AddedCourse;
+
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Collections;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,16 +43,19 @@ import org.springframework.http.HttpStatus;
 import javax.validation.Valid;
 import java.util.Optional;
 
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+
 @Api(description = "AddedCourses")
 @RequestMapping("/api/addedcourses")
 @RestController
 @Slf4j
-public class AddedCoursesController extends ApiController{
-    @Autowired
-    AddedCourseRepository addedCourseRepository;
+public class AddedCoursesController extends ApiController {
 
     @Autowired
     PersonalScheduleRepository personalScheduleRepository;
+
+    @Autowired
+    AddedCourseRepository addedCourseRepository;
 
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
@@ -88,4 +99,51 @@ public class AddedCoursesController extends ApiController{
         AddedCourse savedAddedCourse = addedCourseRepository.save(addedCourse);
         return savedAddedCourse;
     }
+
+    @ApiOperation(value = "Get sections from a single schedule")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/admin")
+    public ResponseEntity<List<ConvertedSection>> thisScheduleSections(
+            @ApiParam("id") @RequestParam Long id
+    ) {
+        PersonalSchedule personalSchedule = personalScheduleRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
+
+        var quarter = personalSchedule.getQuarter();
+        Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
+        List<ConvertedSection> listOfJSON = new ArrayList<>();
+
+        for(AddedCourse currentClass : classesAdded)
+        {
+            String enrollCode = currentClass.getEnrollCd();
+            ConvertedSection currentSectionString = ucsbCurriculumService.getConvertedSection(quarter, enrollCode);
+            listOfJSON.add(currentSectionString);
+        }
+
+        return ResponseEntity.ok().body(listOfJSON);
+    }
+
+
+    @ApiOperation(value = "Get sections from a single schedule (if it belongs to current user)")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public ResponseEntity<List<ConvertedSection>> thisUserSections(
+            @ApiParam("id") @RequestParam Long id) {
+        User currentUser = getCurrentUser().getUser();
+        PersonalSchedule personalSchedule = personalScheduleRepository.findByIdAndUser(id, currentUser)
+          .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
+
+        var quarter = personalSchedule.getQuarter();
+        Iterable<AddedCourse> classesAdded = addedCourseRepository.findAllByPersonalSchedule(personalSchedule);
+        List<ConvertedSection> listOfJSON = new ArrayList<>();
+        for(AddedCourse currentClass : classesAdded)
+        {
+            String enrollCode = currentClass.getEnrollCd();
+            ConvertedSection currentSectionString = ucsbCurriculumService.getConvertedSection(quarter, enrollCode);
+            listOfJSON.add(currentSectionString);
+        }
+
+        return ResponseEntity.ok().body(listOfJSON);
+    }
+
 }
