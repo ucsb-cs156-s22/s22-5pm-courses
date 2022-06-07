@@ -174,7 +174,7 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
         // arrange
 
-        User thisUser = currentUserService.getCurrentUser().getUser();
+        User thisUser = User.builder().id(1L).build();;
 
         PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(thisUser).id(1L).build();
         when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(thisUser))).thenReturn(Optional.of(p1));
@@ -205,7 +205,7 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
         // arrange
 
-         User thisUser = currentUserService.getCurrentUser().getUser();
+         User thisUser = User.builder().id(1L).build();
          User otherUser = User.builder().id(999L).build();
 
          PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(otherUser).id(1L).build();
