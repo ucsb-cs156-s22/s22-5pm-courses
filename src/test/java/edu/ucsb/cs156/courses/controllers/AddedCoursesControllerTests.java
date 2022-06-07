@@ -167,6 +167,9 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+    
+    @WithMockUser(roles = { "USER" })
+    @Test
     public void api_addedcourses_all__user_logged_in__returns_only_schedules_for_user() throws Exception {
 
         // arrange
