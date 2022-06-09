@@ -170,9 +170,14 @@ public class UCSBCurriculumService  {
         try {
             Course courseObject = objectMapper.readValue(rawSectionJSON, Course.class);
             logger.info("courseObject: {}", courseObject);
-            ConvertedSection convertedSectionObject = courseObject.convertedSections().get(0);
 
-            return convertedSectionObject;
+            for (ConvertedSection cs: courseObject.convertedSections()) {
+                if (cs.getSection().getEnrollCode().equals(enrollCode)) {
+                    return cs;
+                }
+            }
+
+            return null;
         } catch (JsonProcessingException jpe) {
             logger.error("JsonProcessingException:" + jpe);
             return null;
