@@ -38,12 +38,14 @@ import java.util.Optional;
 
 import com.mongodb.DuplicateKeyException;
 
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 import static org.mockito.Mockito.doNothing;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,7 +66,6 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
     @MockBean
     UserRepository userRepository;
 
-
     @MockBean
     AddedCourseRepository addedCourseRepository;
 
@@ -82,7 +83,12 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
     public void api_addedcourses_post__logged_out__returns_403() throws Exception {
         mockMvc.perform(post("/api/addedcourses/post")).andExpect(status().is(403));
     }
-
+    // Authorization tests for /api/addedcourses/all/?psID=x
+    @Test
+    public void api_addedcourses_all__logged_out__returns_403() throws Exception {
+        mockMvc.perform(get("/api/addedcourses/all?psId=1"))
+                .andExpect(status().is(403));
+    }
     @WithMockUser(roles = { "USER" })
     @Test
     public void api_addedcourses_post__wrong_enrollcode_length__returns_400() throws Exception {
@@ -156,11 +162,73 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
 
         // assert
         verify(addedCourseRepository, times(1)).save(expectedCourses);
+
         String expectedJson = mapper.writeValueAsString(expectedCourses);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+    
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_addedcourses_all__user_logged_in__returns_only_schedules_for_user() throws Exception {
 
+        // arrange
+
+        User thisUser = User.builder().id(1L).build();
+        CurrentUser curUser = CurrentUser.builder().user(thisUser).build();
+        when(currentUserService.getCurrentUser()).thenReturn(curUser);
+
+        PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(thisUser).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(thisUser))).thenReturn(Optional.of(p1));
+
+        AddedCourse c1 = AddedCourse.builder().enrollCd("1211").personalSchedule(p1).id(1L).build();
+        AddedCourse c2 = AddedCourse.builder().enrollCd("1212").personalSchedule(p1).id(2L).build();
+        AddedCourse c3 = AddedCourse.builder().enrollCd("1213").personalSchedule(p1).id(3L).build();
+        ArrayList<AddedCourse> expectedCourses = new ArrayList<>();
+        expectedCourses.addAll(Arrays.asList(c1, c2, c3));
+
+        when(addedCourseRepository.findAllByPersonalSchedule(p1)).thenReturn(expectedCourses);
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/addedcourses/all?psId=1"))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(addedCourseRepository, times(1)).findAllByPersonalSchedule(eq(p1));
+        String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+    
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_addedcourses_user_logged_in_search_for_courses_to_a_schedule_that_does_not_belong_to_user() throws Exception {
+
+        // arrange
+
+         User thisUser = User.builder().id(1L).build();
+         CurrentUser curUser = CurrentUser.builder().user(thisUser).build();
+         when(currentUserService.getCurrentUser()).thenReturn(curUser);
+        
+         User otherUser = User.builder().id(999L).build();
+
+         PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(otherUser).id(1L).build();
+
+         when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(otherUser))).thenReturn(Optional.of(p1));
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/addedcourses/all?psId=29"))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+
+        verify(addedCourseRepository, times(0)).findAllByPersonalSchedule(p1);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("PersonalSchedule with id 29 not found", json.get("message"));
+    }
+    
     // Authorization tests for /api/addedcourses/
 
     @Test
@@ -325,4 +393,5 @@ public class AddedCoursesControllerTests extends ControllerTestCase {
         assertEquals(convertedSectionString, responseString);
 
     }
+
 }
